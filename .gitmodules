@@ -1,0 +1,3 @@
+[submodule "ontoBrAPI-node-docker"]
+	path = ontoBrAPI-node-docker
+	url = git@github.com:forestbiotech-lab/ontoBrAPI-node-docker.git
