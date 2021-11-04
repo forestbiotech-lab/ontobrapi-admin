@@ -1,3 +1,10 @@
+# Docker-compose 
+
+Rebuild web
+``` bash
+docker-compose up -d --build
+```
+
 # ontoBrAPI
 BrAPI endpoint running virtuoso to serve SparQL queries
 
