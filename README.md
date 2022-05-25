@@ -1,5 +1,16 @@
 # Docker-compose 
 
+#Clone repo and init Submodules
+``` bash
+git clone git@github.com:forestbiotech-lab/ontoBrAPI.git
+cd ontoBrapi
+cd ontoBrapi-node-docker
+git submodules init
+git submodules update
+git checkout master
+``` 
+
+
 Rebuild web
 ``` bash
 docker-compose up -d --build
