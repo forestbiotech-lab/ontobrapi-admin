@@ -35,7 +35,7 @@ git submodule set-url https://github.com/forestbiotech-lab/ontoBrAPI-node-docker
 git checkout master
 ``` 
 
-Rebuild web
+Rebuild web module container
 ``` bash
 docker-compose up -d --build
 ```
