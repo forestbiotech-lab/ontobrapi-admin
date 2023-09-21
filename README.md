@@ -5,8 +5,8 @@
 git clone git@github.com:forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
 cd ontoBrapi-node-docker
-git submodules init
-git submodules update
+git submodule init
+git submodule update
 git checkout master
 ``` 
 
