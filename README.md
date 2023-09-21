@@ -1,3 +1,17 @@
+# What is OntoBrAPI?
+OntoBrAPI encompases 3 major modules that provide: 1) Data submission 2) Data Storage/ curation 3) Data Sharing
+
+# 1) Data submission
+OntoBrAPI runs on a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate the classes.
+
+# 2) Data Storage 
+OntoBrAPI relies on Virtuoso to store triples and builds a management system for data curators to validate datasets and select which datasets are ready for sharing
+
+# 3) Data Sharing
+OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administratores to update the data properties mapped to the respective JSON output in acordance with the BrAPI specification. 
+
+
+
 # Docker-compose 
 
 #Clone repo and init Submodules
