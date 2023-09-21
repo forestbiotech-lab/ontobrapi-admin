@@ -14,7 +14,9 @@ OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as J
 
 # Docker-compose 
 
-#Clone repo and init Submodules
+Clone repo and init Submodules, replace repository url based on the access to the project. git@github.com...... or https://github.com.......
+
+*For collaboratores use this*:
 ``` bash
 git clone git@github.com:forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
@@ -23,7 +25,15 @@ git submodule init
 git submodule update
 git checkout master
 ``` 
-
+*For other users try this*:
+``` bash
+git clone http://github.com/forestbiotech-lab/ontoBrAPI.git
+cd ontoBrapi
+cd ontoBrapi-node-docker
+git submodule init
+git submodule set-url https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
+git checkout master
+``` 
 
 Rebuild web
 ``` bash
