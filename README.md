@@ -1,6 +1,14 @@
-# Basic skeleton for admin container
-Configure brapi calls and curate graphs that are includes in the triple store
+# Admin module of OntoBrAPI
+This repo is a submodule of /forestbiotech-lab/ontobrapi it is the module that handles both curation of the triples that will be incorporated into the triple store along with the mapping of PPEO to the BrAPI call
 
-All urls must be in the /admin url since this is served by nginx in the docker-compose file of the main repo. 
-Static file are served at /admin/public otherwise nginx will refere to another module.
+serves on:
+- /admin
+- /admin/brapi
+
+## Triple Store curation
+This is yet to be implemented, but will contain the ability to validate submitted .nt files from users. The curator will have the job of determining weather it is appropriate to add this new file. 
+
+## BrAPI 
+Administration of the mapping of BrAPI call to the PPEO ontology
+
 
