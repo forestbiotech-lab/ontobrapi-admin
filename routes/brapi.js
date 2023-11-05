@@ -6,10 +6,12 @@ const sparql=require('.././components/sparql/sparql')
 //var sparqlQuery = require('.././components/sparql/sparqlQuery')
 //var testsparql = require('.././components/sparql/testsparql')
 
-//var classProperties = require('./../components/sparql/classProperties')
-//var inferredRelationships = require('./../components/sparql/inferredRelationships')
+const classProperties = require('./../components/sparql/ppeoClassProperties')
+const inferredRelationships = require('./../components/sparql/ppeoInferredRelationships')
+const listClasses = require('./../components/sparql/ppeoListClasses')
+
 //const sanitizeParams  = require('./../components/helpers/sanitizeParms')
-//const fs = require('fs')
+const fs = require('fs')
 
 //TODO implement MongoDB on docker-compose
 //const db = require('./../componentes/db')
@@ -56,10 +58,10 @@ router.get('/listmodules', function(req, res, next) {
   res.render('callEditor/listModules', { title: 'Onto BrAPI - Module List',modules,listCalls,listModules,mapCall})
 });
 
-/*
+
 router.get('/listcalls/:moduleName/list', function(req, res, next) {
   let moduleName=req.params.moduleName
-  let calls=glob.sync(`componentes/modules/${moduleName}/schemes/*`)
+  let calls=glob.sync(`components/modules/${moduleName}/schemes/*.json`)
   calls=calls.map(c=>c.split("/").pop())
   let listCalls="block"
   let listModules="d-none"
@@ -67,20 +69,25 @@ router.get('/listcalls/:moduleName/list', function(req, res, next) {
   res.render('callEditor/listCalls', { title: 'Onto BrAPI - Call List',calls,listModules,listCalls,mapCall})
 });
 
+
 router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next) {
   let moduleName=req.params.moduleName
   let callName=req.params.callName
   //let json=require(`.././componentes/modules/${moduleName}/schemes/${callName}`)
-  let json=JSON.parse(fs.readFileSync(`componentes/modules/${moduleName}/schemes/${callName}`))
+
+  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
   let className=json["_anchor"].class
+  json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/schemes/${callName}`))
 
   prettyHtml=require('json-pretty-html').default
   let html=prettyHtml(json)
   let anchorProperties={objectProperties:[],dataProperties:[]}
+  let classList=[]
   try{
     anchorProperties=await classProperties(className)
     anchorProperties.objectProperties=await inferredRelationships.objectProperties(className)
     anchorProperties.dataProperties=await inferredRelationships.dataProperties(className)
+    classList=await listClasses()
   }catch(err){
     console.log(err)
     anchorProperties=[]
@@ -98,11 +105,19 @@ router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next
     listCalls,
     listModules,
     moduleName,
+    classList,
     anchor:className
   })
 });
 
+router.get('/listcalls/:moduleName/:callName/json', function(req, res, next) {
+  let moduleName=req.params.moduleName
+  let callName=req.params.callName
+  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
+  res.json(json)
+});
 
+/*
 router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next){
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl

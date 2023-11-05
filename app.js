@@ -6,6 +6,9 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var brapiRouter = require('./routes/brapi');
+var formsRouter = require('./routes/forms');
+var queryRouter = require('./routes/query');
+var factoryRouter = require('./routes/factory');
 
 var app = express();
 
@@ -19,8 +22,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/admin/public',express.static(path.join(__dirname, 'public')));
 
+
 app.use('/admin', indexRouter);
 app.use('/admin/brapi', brapiRouter);
+app.use('/admin/forms', formsRouter);
+app.use('/admin/query', queryRouter);
+app.use('/admin/factory', factoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
