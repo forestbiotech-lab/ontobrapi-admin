@@ -20,15 +20,20 @@ module.exports = {
             import:["cookieconsent","cookieconsent/build/cookieconsent.min.css"],
             filename: "cookieconsent.js"
         },
-        "vue":{
+        /*"vue":{
+            import:["vue/vue"],
+            filename: "vue.js"
+        },*/
+        "vueSelect":{
             import: ['vue-select/dist/vue-select.css'],
-            filename:'vue.js'
+            filename:'vue-select.js'
         },
-
     },
     resolve: {
         alias: {
             jquery: "jquery/src/jquery",
+            vue: 'vue/dist', //shortens the import
+            buildingblocks: "@netbofia/buildingblocks"
         }
     },
     plugins: [
@@ -42,7 +47,10 @@ module.exports = {
         new HtmlWebpackPugPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
-            jQuery: "jquery"
+            jQuery: "jquery",
+            buildingblocks: "buildingblocks",
+            //Vue: ["vue/vue.esm.browser.js","Vue"],
+            //vSelect:["vue-select","vSelect"]
         })
     ],
     output: {
