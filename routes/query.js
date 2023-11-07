@@ -4,7 +4,7 @@ const router = express.Router();
 let xsd = require("@ontologies/xsd")
 let classProperties = require('./../components/sparql/ppeoClassProperties')
 let inferredRelationship = require('./../components/sparql/ppeoInferredRelationships')
-
+const listClasses = require('./../components/sparql/ppeoListClasses')
 
 // query/
 
@@ -18,6 +18,16 @@ router.get('/ppeo/class/:class/properties/', async function(req, res, next) {
     let queryResult=await classProperties(className)
     res.json(queryResult)
 });
+
+router.get('/ppeo/listClasses',async (req,res)=>{
+    try{
+        let classList=await listClasses()
+        if (classList instanceof Error) res.json()
+        res.json(classList)
+    }catch (e) {
+        res.sendStatus(400)
+    }
+})
 
 router.get('/xsd/datatypes/', function(req, res) {
     res.json(xsd)

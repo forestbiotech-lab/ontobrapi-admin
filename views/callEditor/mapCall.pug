@@ -3,6 +3,32 @@ block content
     script(src="/admin/public/javascripts/callEditor.js" async defer)
     include menu
     h2=callName
+    div#anchor
+        .card
+            .card-header
+                h5 Anchor
+                    v-select(:options="classes",v-model="className" @input="saveClassToFile")
+            .card-body
+                .d-flex.flex-row
+                    .p-1.align-self-center
+                        h1 S
+                    .p-0.align-self-center
+                        .d-flex.flex-column.text-start
+                            .p-1 Subject:
+                            .p-1 {{ subject }}
+                    .p-1.align-self-center
+                        h1 P
+                    .p-0.align-self-center
+                        .d-flex.flex-column.text-start
+                            .p-1 Predicate:
+                            .p-1 {{ predicate }}
+                    .p-1.align-self-center
+                        h1 O
+                    .p-0.align-self-center
+                        .d-flex.flex-column.text-start
+                            .p-1 Subject:
+                            .p-1 {{ observation }}
+
     .d-grid.pb-5
         a.btn.btn-danger.btn-block(href="result") Call Result
         a.btn.btn-danger.btn-block(href="gui") Call Result GUI

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const freeQuery = require('.././components/sparql/freeQuery')
 const restructuring = require('./../components/helpers/restructuring')
-
+const fs=require("fs")
 
 
 router.get('/ontologyterms/:ontology/',(req,res)=>{
@@ -41,6 +41,24 @@ router.get('/ontologycomments/:ontology/',(req,res)=>{
         res.writeHead( 400, message, {'content-type' : 'text/plain'});
         res.end(message)
     })
+})
+
+router.post('/anchor/set/class',(req,res)=>{
+    let data=req.body
+    let anchor={
+        class:data.className,
+        s:data.subject,
+        p:data.predicate,
+        o:data.observation
+    }
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/modules/${data.module}/maps/${data.file}`))
+        json["_anchor"] = anchor
+        fs.writeFileSync(`components/modules/${data.module}/maps/${data.file}`, JSON.stringify(json, null, 2))
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
 })
 
 

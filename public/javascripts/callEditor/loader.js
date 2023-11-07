@@ -311,7 +311,7 @@ async function dynamicLayer(name) {
     window.vmapping.callStructure=window.callStructure
 }())
 
-Vue.component('v-select', VueSelect.VueSelect);
+Vue.component('v-select', vSelect);
 
 Vue.config.warnHandler = function (msg, vm, trace) {
     if (msg === `Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "column"`) {
@@ -474,3 +474,46 @@ async function getTemplate(part){
     let result = await $.parseHTML(await $.get(`/admin/factory/vue/callEditor/${part}`))
     return result.pop()
 }
+
+window.anchor = new Vue({                                                  //Anonymous can't get back to it if necessary!!!!
+    el: "#anchor",
+    data: {
+        className: $('#mapping').attr('anchor'),
+        predicate:"rdf:type",
+        file:document.location.pathname.split("/").slice(-2)[0],
+        module:document.location.pathname.split("/").slice(-3)[0],
+        classes:[]
+    },
+    computed: {
+        subject(){
+            return "?"+this.className
+        },
+        observation(){
+            return "ppeo:"+this.className
+        }
+    },
+    methods:{
+      //todo something on change of class save class to file reload page
+        async saveClassToFile(a){
+            window.anchor.$data.observation=window.anchor.observation
+            window.anchor.$data.subject=window.anchor.subject
+            let saveClass=await $.post("/admin/forms/anchor/set/class",
+                window.anchor.$data
+            )
+            if(saveClass=="done"){
+                document.location.reload()
+            }else{
+                displayToast("Failed to save class!",saveClass)
+            }
+            console.log(a)
+            //todo Deal with results
+        }
+    },
+    async beforeMount(){
+        try {
+            this.classes=await $.get('/admin/query/ppeo/listClasses')
+        }catch(e){
+            displayToast("Error loading table",JSON.stringify(e))
+        }
+    }
+})
