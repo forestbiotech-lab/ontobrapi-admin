@@ -1,0 +1,8 @@
+{
+  "sparql":{
+    "user": "dba",
+    "pass": "dba",
+    "host":"db",
+    "port":"8890"
+  }
+}
