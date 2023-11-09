@@ -1,8 +1,9 @@
 {
-  "sparql":{
+  "sparql": {
     "user": "dba",
     "pass": "dba",
-    "host":"localhost",
-    "port":"8890"
+    "host": "localhost",
+    "port": "8890",
+    "ontoBrAPIgraph": "http://localhost:8890/miappe"
   }
 }

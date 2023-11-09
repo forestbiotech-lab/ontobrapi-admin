@@ -17,7 +17,7 @@ var paths=pathname.split("/").splice(1)
 
   scriptTarget = document.body;
   for (s in scriptName){
-    let url="/admin/public/javascripts/callEditor/"+scriptName[s]+".js";
+    let url="/admin/public/javascripts/brapi/callEditor/"+scriptName[s]+".js";
     let script = document.createElement('script');
     script.src = url;
     scriptTarget.append(script);

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var glob = require('glob')
-const sparql=require('.././components/sparql/sparql')
+//const sparql=require('.././components/sparql/sparql')
 
 //var sparqlQuery = require('.././components/sparql/sparqlQuery')
 const brapiAttributesQuery = require('.././components/sparql/brapiAttributesQuery')
@@ -46,7 +46,7 @@ let defaultCall={
 
 router.get('/',async function(req,res,next){
 
-  res.render('admin', { title: 'Admin BrAPI Calls'})
+  res.render('brapi', { title: 'Admin BrAPI Calls'})
 
 })
 
@@ -122,9 +122,12 @@ router.get('/listcalls/:moduleName/:callName/json', function(req, res, next) {
 router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next){
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl
-    let server=`${req.protocol}://${req.headers.host}/`
+    let servers= {
+      server:`${req.protocol}://${req.headers.host}/`,
+      activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
+    }
     let {moduleName,callName}=req.params
-    let queryResults=await brapiAttributesQuery(server,moduleName,callName,requestParams)
+    let queryResults=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
     Promise.all(queryResults.results).then(result=>{
       queryResults.callStructure.result.data=result
       res.json(queryResults.callStructure)
@@ -144,9 +147,12 @@ router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
   let mapCall="block"
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl
-    let server=`${req.protocol}://${req.headers.host}/`
+    let servers= {
+      server:`${req.protocol}://${req.headers.host}/`,
+      activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
+    }
     let {moduleName,callName}=req.params
-    let queryResults=await brapiAttributesQuery(server,moduleName,callName,requestParams)
+    let queryResults=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
     Promise.all(queryResults.results).then(result=>{
       queryResults.callStructure.result.data=result
       res.render( "callEditor/callGUI",{data:queryResults.callStructure,moduleName,listCalls,listModules,mapCall})

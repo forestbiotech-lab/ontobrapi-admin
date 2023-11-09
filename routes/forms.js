@@ -61,5 +61,16 @@ router.post('/anchor/set/class',(req,res)=>{
     }
 })
 
+router.post('/graph/set',(req,res)=>{
+    let graph=req.body.graph
+    let config=require('./../.config.json')
+    config.sparql.ontoBrAPIgraph=graph
+    fs.writeFileSync("./.config.json",JSON.stringify(config,null,2))
+    res.json("done")
+})
+router.get('/graph/get',(req,res)=>{
+    let config=require('./../.config.json')
+    res.json({graph:config.sparql.ontoBrAPIgraph})
+})
 
 module.exports = router;

@@ -12,7 +12,7 @@ let subject = 's'
 let object = 'o'
 let predicate = 'p'
 const brapi="http://brapi.biodata.pt/"
-const ontoBrAPI="http://localhost:8890/vitis"
+let activeGraph=sparql.ontoBrAPIgraph
 let devServer="http://localhost:3000/"
 
 let pageSize
@@ -75,7 +75,7 @@ function sparqlQuery(sparqlQueryParams,triples,options,count) {
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
  
   ${select}
-  FROM <${ontoBrAPI}>
+  FROM <${activeGraph}>
   WHERE
     {\n`
     triples.forEach(triple=>{
@@ -95,8 +95,10 @@ function getResults(querySelectors,triples,options){
 
 //Define request options for SparQL Query
 //Setup metadata response
-async function getAnchors(server,moduleName,callName,requestParam,requestTrip){
-    devServer=server
+async function getAnchors(servers,moduleName,callName,requestParam,requestTrip){
+    devServer=servers.server
+    activeGraph=servers.activeGraph
+
     //Define class and property
     let callStructure=Object.assign({},getCallStructure(moduleName,callName))
     let subject,predicate,object,anchor

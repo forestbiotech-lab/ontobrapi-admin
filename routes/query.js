@@ -5,7 +5,8 @@ let xsd = require("@ontologies/xsd")
 let classProperties = require('./../components/sparql/ppeoClassProperties')
 let inferredRelationship = require('./../components/sparql/ppeoInferredRelationships')
 const listClasses = require('./../components/sparql/ppeoListClasses')
-
+const freeQuery = require('./../components/sparql/freeQuery')
+const restructuring = require("../components/helpers/restructuring");
 // query/
 
 /* GET users listing. */
@@ -67,5 +68,20 @@ router.get('/inferred/dataPropertyRange/:dataProperty',(req,res)=>{
 
 })
 
+
+router.get('/list/graphs',(req,res)=>{
+    query=`SELECT  DISTINCT ?g
+            WHERE  { GRAPH ?g {?s ?p ?o} }
+            ORDER BY  ?g
+    `
+    freeQuery(query).then(data=>{
+        data=data.map(graph=>graph.g)
+        res.json(data)
+    }).catch(err=>{
+        let message=err.message
+        res.writeHead( 400, message, {'content-type' : 'text/plain'});
+        res.end(message)
+    })
+})
 
 module.exports = router;
