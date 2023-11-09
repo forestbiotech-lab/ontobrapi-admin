@@ -10,9 +10,36 @@ services:
     ports:
       - "8890:8890"
       - "1111:1111"  
+  gatekeeper:
+    image: nginx
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/static:/usr/share/nginx/html
+    ports:
+      - "3001:80"
+    environment:
+      - NGINX_PORT=80
+
   web:
     build: ./ontoBrAPI-node-docker
     ports:
-      - "3001:3000"
+      - "3002:3000"
+    volumes:
+      - ./.config.json:/usr/src/app/.config.json
     depends_on:
       - db
+
+        #admin:  
+        #    build: ./ontobrapi-admin
+        #    ports:
+        #      - "3003:3000"
+        #    volumes:
+        #      - ./.config.json/:/usr/src/app/.config.json
+        #    depends_on:
+        #      - db
+  #cache:
+  #image:mongoDB 
+
+#docker-compose down gatekeeper; docker-compose up gatekeeper -d; docker-compose logs -f gatekeeper;
+#docker exec -it ontobrapi-gatekeeper-1 /bin/bash  
