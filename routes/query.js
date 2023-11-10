@@ -84,4 +84,30 @@ router.get('/list/graphs',(req,res)=>{
     })
 })
 
+router.post("/graph/lookup/summary/",(req,res)=>{
+    let graph=req.body.graph
+    query=`
+PREFIX ppeo:<http://purl.org/ppeo/PPEO.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?investigation ?investigationName ?investigationDescription ?study
+
+FROM <${graph}> 
+WHERE {
+  ?investigation rdf:type      ppeo:investigation .
+  ?investigation ppeo:hasName ?investigationName .
+  ?investigation ppeo:hasDescription ?investigationDescription .
+  ?investigation ppeo:hasPart  ?study . 
+  ?study         rdf:type      ppeo:study . 
+}
+    `
+    freeQuery(query).then(data=>{
+        res.json(data)
+    }).catch(err=>{
+        let message=err.message
+        res.writeHead( 400, message, {'content-type' : 'text/plain'});
+        res.end(message)
+    })
+})
+
 module.exports = router;
