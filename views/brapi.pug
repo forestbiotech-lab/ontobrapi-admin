@@ -14,7 +14,7 @@ block content
       .card-header
         h5 Available Graphs
       .card-body
-        v-select(:options="availableGraphs",v-model="graph" @input="saveGraph")
+        v-select.p-2(:options="availableGraphs",v-model="graph" @input="saveGraph")
         div(v-for="item of availableGraphs")
           p {{item}}
 

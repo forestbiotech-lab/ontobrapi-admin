@@ -4,6 +4,6 @@
     "pass": "dba",
     "host": "localhost",
     "port": "8890",
-    "ontoBrAPIgraph": "http://localhost:8890/miappe"
+    "ontoBrAPIgraph": "http://localhost:8890/vitis"
   }
 }
