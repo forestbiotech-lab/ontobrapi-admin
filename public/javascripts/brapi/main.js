@@ -12,7 +12,23 @@ window.app=new Vue({
             $.post("/admin/forms/graph/set",{graph: this.graph})
         },
         parseGraphDetails(graph,details){
-            let studyCount = details.map(study=>study.s)
+            let investigations = details.reduce((acc,item)=> {
+                acc[item.investigation]={
+                    name:item.investigationName,
+                    description:item.investigationDescription
+                }
+                return acc
+            },{})
+            let studies = details.reduce((acc,item)=> {
+                acc[item.study]=""
+                return acc
+            },{})
+            this.graphSummary[graph]={
+                studies:Object.keys(studies),
+                studiesCount:Object.keys(studies).length,
+                investigations:Object.keys(investigations),
+                investigationsDetails:investigations
+            }
         }
 
     },
@@ -20,11 +36,21 @@ window.app=new Vue({
         let graph=await $.get("/admin/forms/graph/get")
         this.graph=graph.graph
         this.availableGraphs=await $.get("/admin/query/list/graphs")
+        //Todo cache this
+        for (let graph of this.availableGraphs) {
+            //graph="http://localhost:8890/vitis"
+            graph=graph.replace(/\\/g,"")
+            let graphDetails= await $.post("/admin/query/graph/lookup/summary/", {graph})
 
+            if(graphDetails.length>0){
+                this.parseGraphDetails(graph,graphDetails)
+            }
+        }
+        this.$forceUpdate()
     },
     async mounted(){
-       graph="http://localhost:8890/trace-rice"
-       this.graphSummary[graph] = await $.post("/admin/query/graph/lookup/summary/", {graph})
+        //Doesn't resolve before the async methods in beforemount
+
     }
 
 })

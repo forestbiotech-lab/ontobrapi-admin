@@ -7,7 +7,6 @@ block content
   button.btn.btn-danger Hello
   a.btn.btn-danger(href="/admin/brapi/listmodules") List Modules
   #app
-    p {{ summary }}
     .d-flex.flex-row
       label.p-3.pe-1.badge.bg-secondary(for="active-graph") Active graph:
       .badge.bg-primary#active-graph.p-3.ps-1 {{ graph }}
@@ -16,7 +15,15 @@ block content
         h5 Available Graphs
       .card-body
         v-select.p-2(:options="availableGraphs",v-model="graph" @input="saveGraph")
-        div(v-for="item of availableGraphs")
-          p {{item}}
-
+        table
+          tr
+            th Graph
+            th Investigation name
+            th #Studies
+          tr(v-for="item of availableGraphs")
+            td {{item}}
+            td(v-if="graphSummary[item]" :title="graphSummary[item].investigationsDetails[graphSummary[item].investigations[0]].description")
+              .badge.bg-success {{ graphSummary[item].investigations.length }}
+              | {{ graphSummary[item].investigationsDetails[graphSummary[item].investigations[0]].name }}
+            td.badge.bg-success(v-if="graphSummary[item]") {{graphSummary[item].studiesCount}}
 
