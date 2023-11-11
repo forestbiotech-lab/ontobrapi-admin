@@ -36,3 +36,46 @@ Make sure .config.json is correctly configured, install dependencies build front
     npm run build
     npm start
 ```
+
+## Importing multiple n-triple files
+
+An N-triples file that imports multiple ontologies can be defined by using the @import directive. The @import directive allows you to reference another N-triples file within your current file. When the file is imported, the triples from the imported file are added to the current file.
+
+Here is an example of how to define an N-triples file that imports two ontologies:
+
+```owl
+@import "ontology1.ntriples";
+@import "ontology2.ntriples";
+
+# Triples from your current file
+<subject> <predicate> <object> .
+```
+
+In this example, the ontology1.ntriples and ontology2.ntriples files are imported into the current file. The triples from these files are then added to the current file.
+
+Here is an example of how to define an N-triples file that imports an ontology from an external URL:
+
+```owl
+@import <http://www.example.com/ontology.ntriples>;
+
+# Triples from your current file
+<subject> <predicate> <object> .
+```
+
+In this example, the ontology.ntriples file is imported from the URL http://www.example.com/ontology.ntriples. The triples from this file are then added to the current file.
+
+You can import multiple ontologies into a single N-triples file. The imported ontologies can be referenced from within the current file using the @prefix directive.
+
+Here is an example of how to define an N-triples file that imports two ontologies and then references them from within the current file:
+
+```owl
+@prefix ex1: <http://example.com/ontology1/> .
+@prefix ex2: <http://example.com/ontology2/> .
+
+@import "ontology1.ntriples";
+@import "ontology2.ntriples";
+```
+
+ex1:subject ex1:predicate ex1:object .
+ex2:subject ex2:predicate ex2:object .
+In this example, the ontology1.ntriples and ontology2.ntriples files are imported into the current file. The ex1: and ex2: prefixes are then defined to reference the namespaces of the two ontologies. Finally, the triples from the current file are defined using the prefixes.
