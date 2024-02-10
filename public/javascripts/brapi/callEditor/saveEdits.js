@@ -22,7 +22,7 @@
       window.vmapping.callStructure=callStructure
     }
   })
-  //Export the function for laoder
+  //Export the function for loader
   window.callStructureLoaded=callStructureLoaded
 
   function loadValues(callStructureFragment){
@@ -66,24 +66,35 @@
       target.empty()
     },extraOptions.duration)    
   }
+  /**
+   * Modifies the call structure based on the provided attributes and values.q
+   *
+   * @param {type} callAttribute - description of parameter
+   * @param {type} layer - description of parameter
+   * @param {type} inputAttribute - description of parameter
+   * @param {type} inputValue - description of parameter
+   * @param {type} callStructureFragment - description of parameter
+   * @return Void
+   */
   function modifyCallStructure(callAttribute,layer,inputAttribute,inputValue,callStructureFragment){
     let data=callStructureFragment
-    if( data[callAttribute] ) {
-      if (typeof data[callAttribute]["_sparQL"] === "object") {
-        if (data[callAttribute]["_sparQL"].length < layer + 1) {
-          data[callAttribute]["_sparQL"][layer] = {}
+    if( data["_sparQL"] ) { //Existing attribute
+      if (typeof data["_sparQL"] === "object") { //Converted to hold mapping info
+        if (data["_sparQL"].length < layer + 1) {
+          data["_sparQL"][layer] = {}
         }
-        data[callAttribute]["_sparQL"][layer][inputAttribute] = inputValue
+        //TODO unnecessary set by computed property or class
+        //data["_sparQL"][layer][inputAttribute] = inputValue
       } else {
-        let value = data[callAttribute]
+        let value = data
         let previousValue
         if (typeof value === "object") {
-          previousValue = Object.assign({}, data[callAttribute])
+          previousValue = Object.assign({}, data)
           delete previousValue["_sparQL"]
         } else {
-          previousValue = data[callAttribute]
+          previousValue = data
         }
-        data[callAttribute] = {
+        data = {
           "_sparQL": [{
             [inputAttribute]: inputValue
           }],
@@ -103,6 +114,9 @@
       }
     }
   }
+
+  window.exports={modifyCallStructure}
+
 
   function addNewLayer(evt,selector,data,handler){
     let target
@@ -145,6 +159,9 @@
   function addSelectPropertyOnChange(target){
     target.find('.form-group select').change(selectProperty)  
   }
+
+
+  //TODO  not working
   addSelectPropertyOnChange($('body'))
   function selectProperty(evt,selector,data,handler){
     if(data) data=data.data
