@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 # Create app directory
 LABEL authors="brunocosta"
 WORKDIR /usr/src/app
