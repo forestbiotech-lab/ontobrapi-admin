@@ -158,13 +158,25 @@ async function dynamicLayer(name) {
                     })
 
             },
-            saveInputValue(event, dataType) {
+            saveInputValue(ev, dataType) {
+                //TODO deprecated since required setValueForLayer first
                 let input = event ? event.target : $(`#${this.attribute} [layer|= ${this.layer}] input[name|=${dataType}]:nth(0)`)
                 dataType = dataType || input.name
-                let value = input.value || input.val()
-                let target = input.closest('.form-group').children('label').children('.badge-holder')
-                modifyCallStructure(this.attribute, this.layer, dataType, value, this.mapping)
-                saveCallStruture(target)
+
+                let value,targetLabel;
+                if(dataType == "class"){
+                    value = this.className
+                }else if(dataType == "property"){
+                    value = this.property
+                }
+
+                if(input instanceof HTMLElement){
+                    targetLabel =$(`#${this.attribute} [layer|= ${this.layer}] input[name|=${dataType}]:nth(0)`).closest('.form-group').children('label').children('.badge-holder')
+                }else if(input.jquery){
+                    targetLabel = input.closest('.form-group').children('label').children('.badge-holder')
+                }
+                //modifyCallStructure(this.attribute, this.layer, dataType, value, this.mapping)
+                saveCallStruture(targetLabel)
             },
             setValueForLayer(val) {
                 //TODO subType Object and Array
@@ -178,6 +190,8 @@ async function dynamicLayer(name) {
                                 this.callStructure.result.data[0][this.attribute][this.subItem]._sparQL.pop()
                             }else if(this.subType=="array"){
                                 this.callStructure.result.data[0][this.attribute][0][this.subItem]._sparQL.pop()
+                            }else{
+                                this.callStructure.result.data[0][this.attribute]._sparQL.pop()
                             }
                         }
                     }
@@ -230,6 +244,8 @@ async function dynamicLayer(name) {
         }
     })
 }
+
+
 (async function loadVue() {
     await loadSubItemObject()
     await dynamicLayer("layer")
@@ -384,75 +400,7 @@ function saveCallStruture(target){
 
 
 //---------------------------------
-function iterObject(attributes,callAttribute,value){
-    if(typeof value === "object"){
-        if( value instanceof Array){
-            $(`button[attribute|="${attributes.string}"]`).addClass('dropdown-toggle').removeClass('btn-primary').addClass('btn-warning')
 
-            if(typeof value[0] === "string"){
-
-            }else{
-             //TODO Objects inside Array
-            }
-        }else{
-            if(Object.keys(value).length !== 2 ){
-                $(`button[attribute|="${attributes.string}"]`).addClass('dropdown-toggle').removeClass('btn-primary').addClass('btn-secondary')
-            }else{
-                if(Object.keys(value).indexOf('_sparql')!==-1){
-                    $(`button[attribute|="${attributes.string}"]`).addClass('dropdown-toggle').removeClass('btn-primary').addClass('btn-secondary')
-                }else{
-                    //Fills in the button value
-                    $(`button[attribute|="${attributes.string}"]`).children('span.badge').text(value["_value"])
-                }
-            }
-            let target=$(`.collapse#${attributes.string}`)
-            if(!Object.keys(value).includes("_sparQL") && Object.keys(value).length!=2)
-                target.empty()
-            let table=mkel("table",{},target)
-
-
-            for( var [subAttr,subValue] of Object.entries(value)) {
-
-                if (subAttr === '_sparQL') {
-                    value['_sparQL'].forEach((layerData, layer) => {
-                        if (layer > 0) {
-                            let data = {
-                                layerData,
-                                longAttribute:attributes.string,
-                                layer,
-                                callback: loadEntries,
-                                target: $(`.collapse[id|=${callAttribute}] .card-title[layer|=${layer - 1}]`).closest('.card').find('button.add-new-layer').first()
-                            } //So its removed
-                            addNewLayer(null, null, {data})
-                        } else {
-                            loadEntries(layerData, layer, attributes.string)
-                        }
-
-                        function loadEntries(layerData, layer, longAttribute) {
-                            Object.entries(layerData).forEach(([attribute, val]) => {
-                                $(`.collapse#${longAttribute} .form-group input#layer${layer}-${attribute}`).val(val)
-                            })
-                        }
-
-                    })
-                }else if(subAttr === '_value'){
-                    //TODO - Use for deeper buttons
-                }else{
-                    attributes.array.push(subAttr)
-                    attributes.string=attributes['array'].join(attributeGlue)
-                    let element=$('tr.template-element').clone()
-                    fillElement(element,table,subAttr,attributes)
-                    iterObject(attributes,subAttr,subValue)
-                }
-
-            }
-        }
-
-
-    }else if(typeof value === "string"){
-        $(`button[attribute|="${attributes.string}"]`).children('span.badge').text(value)
-    }
-}
 
 
 function fillElement(element,table,attr,attributes){
