@@ -1,12 +1,14 @@
 const puppeteer = require('puppeteer');
 const fs=require('fs');
+const http=require('http');
 const path=require('path');
 const {direct} = require("selenium-webdriver/lib/proxy");
 const chai = require("chai");
 const prettyHtml = require('json-pretty-html').default;
-const browserURL = 'http://localhost:37679'  //debug port
+const browserURL = 'http://localhost:45131'  //debug port
 const moduleName = "core"
 const callName = "programs.json"
+const testPagePort= 3000
 
 /*
   Check chrome://version for details
@@ -54,7 +56,7 @@ async function setupEnvironment(moduleName, callName) {
 
     firstPage = pages[0]
     await firstPage.bringToFront();
-    await firstPage.goto(`http://localhost:3000/admin/brapi/listcalls/${moduleName}/${callName}/map`);
+    await firstPage.goto(`http://localhost:${testPagePort}/admin/brapi/listcalls/${moduleName}/${callName}/map`);
     await tools.testStateOfLoading(firstPage)
     return firstPage
 }
@@ -104,32 +106,83 @@ let tools={
         callJSON.result.data[0].abbreviation = "P2"
         fs.writeFileSync(`components/modules/${moduleName}/maps/${callName}`, JSON.stringify(callJSON, null, 2))
         return callJSON
+    },
+    async getResultJSON(moduleName, callName) {
+        return new Promise((resolve, reject) => {
+            http.get(`http://localhost:${testPagePort}/admin/brapi/listcalls/${moduleName}/${callName}/result`, (res) => {
+                const {statusCode} = res;
+                const contentType = res.headers['content-type'];
+
+                let error;
+                // Any 2xx status code signals a successful response but
+                // here we're only checking for 200.
+                if (statusCode !== 200) {
+                    error = new Error('Request Failed.\n' +
+                        `Status Code: ${statusCode}`);
+                } else if (!/^application\/json/.test(contentType)) {
+                    error = new Error('Invalid content-type.\n' +
+                        `Expected application/json but received ${contentType}`);
+                }
+                if (error) {
+                    console.error(error.message);
+                    // Consume response data to free up memory
+                    res.resume();
+                    reject(error)
+                }
+                res.setEncoding('utf8');
+                let rawData = '';
+                res.on('data', (chunk) => {
+                    rawData += chunk;
+                });
+                res.on('end', () => {
+                    try {
+                        const parsedData = JSON.parse(rawData);
+                        console.log(parsedData);
+                        resolve(parsedData);
+                    } catch (e) {
+                        console.error(e.message);
+                    }
+                });
+
+            }).on('error', (e) => {
+                console.error(`Got error: ${e.message}`);
+            });
+        })
     }
 }
 
 //pagefunctions
 let pf={
-    toggleAttributeCollapse: async function(attributeName,page) {
-        let abbreviationButton = await page.waitForSelector(`button[attribute='${attributeName}']`)
-        await abbreviationButton.click()
-        await firstPage.waitForTimeout(1000)
+    toggleAttributeCollapse: async function(attributeName,attributeType,page) {
+        let {selectorTypeClass,attributeTypeName} = pf.getSelectorType(attributeType)
+        let attributeButton = await page.waitForSelector(`td.${selectorTypeClass}[attribute='${attributeName}'] button[attribute='${attributeName}']`)
+        await attributeButton.click()
+        await page.waitForTimeout(1000)
     },
-    vSelectTypeOption: async function(attributeName,attributeType,type,layer,page) {
-        let collapseId =  `${attributeName}`
+    getSelectorType:function(attributeType){
         if (attributeType == "directAttribute") {
             selectorTypeClass = "direct-attribute"
             attributeTypeName = "Direct Attribute"
+
         } else if (attributeType == "objectAttribute") {
             selectorTypeClass = "object-attribute"
             attributeTypeName = "Object Attribute"
+        } else if (attributeType == "arrayAttribute") {
+            selectorTypeClass = "array-attribute"
+            attributeTypeName = "Array Attribute"
         }
+        return {selectorTypeClass,attributeTypeName}
+    },
+    vSelectTypeOption: async function(attributeName,attributeType,ontologyType,layer,page,collapseId) {
+        collapseId = collapseId || `${attributeName}`
+        let {selectorTypeClass,attributeTypeName} = pf.getSelectorType(attributeType)
 
         let vselect_attribute = await firstPage.waitForSelector(`td.${selectorTypeClass}[attribute="${attributeName}"] .collapse#${collapseId} [layer="${layer}"] .v-select`)
         await vselect_attribute.click()
         await firstPage.waitForTimeout(1000)
 
 
-        let vselect_attribute_options = await page.$$(`td.${selectorTypeClass}[attribute="${attributeName}"] .collapse#${collapseId} [layer="${layer}"] .v-select li .${type}`)
+        let vselect_attribute_options = await page.$$(`td.${selectorTypeClass}[attribute="${attributeName}"] .collapse#${collapseId} [layer="${layer}"] .v-select li .${ontologyType}`)
         if (vselect_attribute_options < 1) {
             console.log(`*****Fail***** [${attributeTypeName}] - V-select has no options`)
         }
@@ -150,15 +203,10 @@ let pf={
 
         return {className,propertyName}
     },
-    addLayer:async function(attributeName,attributeType,layer,page) {
-        let collapseId =  `${attributeName}`
-        if (attributeType == "directAttribute") {
-            selectorTypeClass = "direct-attribute"
-            attributeTypeName = "Direct Attribute"
-        } else if (attributeType == "objectAttribute") {
-            selectorTypeClass = "object-attribute"
-            attributeTypeName = "Object Attribute"
-        }
+    addLayer:async function(attributeName,attributeType,layer,page, collapseId){
+        collapseId =   collapseId || attributeName
+        let {selectorTypeClass,attributeTypeName} = pf.getSelectorType(attributeType)
+
         const addLayerButtonSelector = `td.${selectorTypeClass}[attribute="${attributeName}"] .collapse#${collapseId} [layer="${layer}"] button.add-new-layer`;
         let addLayerButton=await page.$$(addLayerButtonSelector)
         if(addLayerButton.length<1){
@@ -166,30 +214,47 @@ let pf={
         }
         await addLayerButton[0].click()
         await page.waitForTimeout(1000)
+    },
+    toggleRandomSubObject:async function (attributeName,attributeType,page){
+        let collapseId=  `${attributeName}`
+        let {selectorTypeClass,attributeTypeName} = pf.getSelectorType(attributeType)
+        let sub_attributeButtons = await page.$$(`td.${selectorTypeClass}[attribute='${attributeName}'] .collapse#${collapseId} button[attribute|='${attributeName}']`)
+        let option=tools.random(sub_attributeButtons.length)
+        //TODO get sub-attribute name
+        await sub_attributeButtons[option].click()
+        await page.waitForTimeout(1000)
+        let buttonSelector=`td.${selectorTypeClass}[attribute='${attributeName}'] .collapse#${collapseId} button[attribute|='${attributeName}']`
+
+
+        collapseId = await page.evaluate((buttonSelector,option) => {
+            const buttonElement = document.querySelectorAll(buttonSelector)[option];
+            return buttonElement ? buttonElement.attributes.attribute.value : null;
+        }, buttonSelector,option);
+
+        return collapseId
+    },
+    toggleSubObject:async function (attributeName,attributeType,page,subAttributeName){
+        let collapseId=  `${attributeName}`
+        let {selectorTypeClass,attributeTypeName} = pf.getSelectorType(attributeType)
+        let sub_attributeButtons = await page.$$(`td.${selectorTypeClass}[attribute='${attributeName}'] .collapse#${collapseId} button[attribute='${attributeName}-${subAttributeName}']`)
+        await sub_attributeButtons[0].click()
+        await page.waitForTimeout(1000)
     }
 }
 
-async function directSetup() {
+async function directSetup(attributeName) {
     let attributeType = "directAttribute"
     let layer=0
-    let attributeName = "abbreviation"
+    attributeName = attributeName || "abbreviation"
     let type="objectProperty"
-
     let attributeTypeName, selectorTypeClass, collapseId
 
 
-
     firstPage = await setupEnvironment(moduleName, callName)
-    const directRows = (await firstPage.$$(`td.${selectorTypeClass}`))
-
-
-
-    await pf.toggleAttributeCollapse(attributeName,firstPage)
+    await pf.toggleAttributeCollapse(attributeName,attributeType,firstPage)
     const {className,propertyName} = await pf.vSelectTypeOption(attributeName,attributeType,type,layer,firstPage)
 
-
-
-
+    //const directRows = (await firstPage.$$(`td.${selectorTypeClass}`))  //???
     /*collapseId=await (await directRows[attributeChoice].$(`button.${selectorTypeClass}`)).evaluate(el => {
         //window.scrollBy(500, window.innerHeight);
         el.click();
@@ -220,27 +285,70 @@ async function directSetupAddLayer() {
     let layer=1
     let attributeName = "abbreviation"
     let type="objectProperty"
-
     let attributeTypeName, selectorTypeClass, collapseId
 
-
-
     firstPage = await setupEnvironment(moduleName, callName)
-    await pf.toggleAttributeCollapse(attributeName,firstPage)
+    await pf.toggleAttributeCollapse(attributeName,attributeType,firstPage)
     await pf.addLayer(attributeName,attributeType,layer-1,firstPage)
     const {className,propertyName} = await pf.vSelectTypeOption(attributeName,attributeType,type,layer,firstPage)
-
-
-
     let callStructure = await tools.exfiltrate("callStructure",firstPage)
     let callStructureFragment = tools.extractCallStructureFragment(callStructure, attributeName)
 
     return {callStructureFragment,className,propertyName}
 }
 
+async function objectAddLayer(attributeName,attributeType,subAttributeName) {
+    attributeType = attributeType || "directAttribute"
+    let layer=1
+    let ontologyType="objectProperty"
+    let collapseId=attributeName
+    if(subAttributeName){
+        collapseId+=`-${subAttributeName}`
+    }
+
+    firstPage = await setupEnvironment(moduleName, callName)
+    await pf.toggleAttributeCollapse(attributeName,attributeType,firstPage)
+    await pf.toggleSubObject(attributeName,attributeType,firstPage,subAttributeName)
+    await pf.addLayer(attributeName,attributeType,layer-1,firstPage,collapseId)
+    collapseId=`${attributeName}-${subAttributeName}`
+    const {className,propertyName} = await pf.vSelectTypeOption(attributeName,attributeType,ontologyType,layer,firstPage,collapseId)
+    let callStructure = await tools.exfiltrate("callStructure",firstPage)
+    let callStructureFragment = tools.extractCallStructureFragment(callStructure, attributeName)
+
+    return {callStructureFragment,className,propertyName}
+}
+
+async function objectSetup(attributeName,attributeType,subAttributeName) {
+    attributeType =  attributeType || "objectAttribute"
+    let layer=0
+    attributeName = attributeName || "additionalInfo"
+    let ontologyType="objectProperty"
+    let attributeTypeName, selectorTypeClass, collapseId
+    subAttributeName = subAttributeName || null
+
+    let firstPage = await setupEnvironment(moduleName, callName)
+    await pf.toggleAttributeCollapse(attributeName,attributeType,firstPage)
+
+    if(subAttributeName){
+        collapseId=`${attributeName}-${subAttributeName}`
+        await pf.toggleSubObject(attributeName,attributeType,firstPage,subAttributeName)
+    }else {
+        collapseId = await pf.toggleRandomSubObject(attributeName, attributeType, firstPage)
+        subAttributeName=collapseId.split("-")[1]
+    }
+
+    const {className,propertyName} = await pf.vSelectTypeOption(attributeName,attributeType,ontologyType,layer,firstPage,collapseId)
+
+    let callStructure = await tools.exfiltrate("callStructure",firstPage)
+    let callStructureFragment = tools.extractCallStructureFragment(callStructure, attributeName)
+    return {callStructureFragment,className,propertyName,subAttributeName}
+}
 
 
-describe("Direct test", function () {
+//**************************************** TESTS ****************************************
+
+
+describe("Direct test <abbreviation>", function () {
     this.timeout(10000)
     let callJSON;
     before(function(){
@@ -254,9 +362,34 @@ describe("Direct test", function () {
         chai.assert.exists(callJSON.result.data[0].abbreviation)
         chai.assert.equal(callJSON.result.data[0].abbreviation, "P2")
     })
-    it("Direct non instanced", async function () {
+    it("Instance direct attribute", async function () {
         let result=await directSetup()
         let callStructureFragment=result.callStructureFragment
+        chai.assert.typeOf(callStructureFragment, 'object')
+        chai.assert.exists(callStructureFragment._sparQL)
+        chai.assert.exists(callStructureFragment._value)
+        chai.assert.typeOf(callStructureFragment._sparQL, "array")
+        chai.assert.equal(callStructureFragment._value, "P2")
+        chai.assert.equal(callStructureFragment._sparQL.length, 1)
+        chai.assert.equal(callStructureFragment._sparQL[0].class, result.className)
+        chai.assert.equal(callStructureFragment._sparQL[0].property, result.propertyName)
+    })
+    it("Direct instanced add layer", async function () {
+        let result=await directSetupAddLayer()
+        let callStructureFragment=result.callStructureFragment
+        chai.assert.typeOf(callStructureFragment, 'object')
+        chai.assert.exists(callStructureFragment._sparQL)
+        chai.assert.exists(callStructureFragment._value)
+        chai.assert.typeOf(callStructureFragment._sparQL, "array")
+        chai.assert.equal(callStructureFragment._value, "P2")
+        chai.assert.equal(callStructureFragment._sparQL.length, 2)
+        chai.assert.equal(callStructureFragment._sparQL[1].class, result.className)
+        chai.assert.equal(callStructureFragment._sparQL[1].property, result.propertyName)
+    })
+    it("Change layer 0 (Remove all other layers)", async function () {
+        let result=await directSetup()
+        let callStructureFragment=result.callStructureFragment
+        //works for array and object, but not for direct
         chai.assert.typeOf(callStructureFragment, 'object')
         chai.assert.exists(callStructureFragment._sparQL)
         chai.assert.exists(callStructureFragment._value)
@@ -271,18 +404,247 @@ describe("Direct test", function () {
     })
 })
 
-describe("Direct test with layers", function () {
+describe("Object test random attribute non instanced", function () {
     this.timeout(10000)
-    it("Direct instanced add layer", async function () {
-        let result=await directSetupAddLayer()
+
+})
+
+describe("Object <additionalInfo> Sub-attribute Direct single layer", function () {
+    this.timeout(10000)
+    //before prepare the call structure
+    let subAttribute;
+
+    it("First layer", async function () {
+        let result=await objectSetup()
+        let callStructureFragment=result.callStructureFragment
+        subAttribute=result.subAttributeName
+        chai.assert.typeOf(callStructureFragment, 'object')
+        chai.assert.exists(callStructureFragment[subAttribute])
+        chai.assert.typeOf(callStructureFragment[subAttribute], "object")
+        chai.assert.exists(callStructureFragment[subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL.length, 1)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[0].class, result.className)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[0].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[subAttribute]._value)
+    })
+    it("Add layer", async function () {
+        let result=await objectAddLayer("additionalInfo","objectAttribute",subAttribute)
         let callStructureFragment=result.callStructureFragment
         chai.assert.typeOf(callStructureFragment, 'object')
-        chai.assert.exists(callStructureFragment._sparQL)
-        chai.assert.exists(callStructureFragment._value)
-        chai.assert.typeOf(callStructureFragment._sparQL, "array")
-        chai.assert.equal(callStructureFragment._value, "P2")
-        chai.assert.equal(callStructureFragment._sparQL.length, 2)
-        chai.assert.equal(callStructureFragment._sparQL[1].class, result.className)
-        chai.assert.equal(callStructureFragment._sparQL[1].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[subAttribute])
+        chai.assert.typeOf(callStructureFragment[subAttribute], "object")
+        chai.assert.exists(callStructureFragment[subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL.length, 2)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[1].class, result.className)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[1].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[subAttribute]._value)
+    })
+    it("Change layer 0 (Remove all other layers)", async function () {
+        let result=await objectSetup("additionalInfo","objectAttribute",subAttribute)
+        let callStructureFragment=result.callStructureFragment
+        chai.assert.typeOf(callStructureFragment, 'object')
+        chai.assert.exists(callStructureFragment[subAttribute])
+        chai.assert.typeOf(callStructureFragment[subAttribute], "object")
+        chai.assert.exists(callStructureFragment[subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL.length, 1)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[0].class, result.className)
+        chai.assert.equal(callStructureFragment[subAttribute]._sparQL[0].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[subAttribute]._value)
     })
 })
+
+describe("Array <externalReferences> Sub-attribute Direct single layer", function () {
+    this.timeout(10000)
+    //before prepare the call structure
+    let subAttribute;
+    it("First layer", async function () {
+        let result=await objectSetup("externalReferences","arrayAttribute")
+        let callStructureFragment=result.callStructureFragment
+        subAttribute=result.subAttributeName
+        chai.assert.typeOf(callStructureFragment, 'array')
+        //It prepends an object to the array but keeps the original array values.
+        //The addition of a
+        chai.assert.exists(callStructureFragment[0][subAttribute])
+        chai.assert.typeOf(callStructureFragment[0][subAttribute], "object")
+        chai.assert.exists(callStructureFragment[0][subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[0][subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL.length, 1)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[0].class, result.className)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[0].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[0][subAttribute]._value)
+    })
+    it("Add layer", async function () {
+        let result=await objectAddLayer("externalReferences","arrayAttribute",subAttribute)
+        let callStructureFragment=result.callStructureFragment
+        chai.assert.typeOf(callStructureFragment, 'array')
+        //It prepends an object to the array but keeps the original array values.
+        //The addition of a
+        chai.assert.exists(callStructureFragment[0][subAttribute])
+        chai.assert.typeOf(callStructureFragment[0][subAttribute], "object")
+        chai.assert.exists(callStructureFragment[0][subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[0][subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL.length, 2)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[1].class, result.className)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[1].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[0][subAttribute]._value)
+    })
+    it("Change layer 0 (Remove all other layers)", async function () {
+        let result=await objectSetup("externalReferences","arrayAttribute",subAttribute)
+        let callStructureFragment=result.callStructureFragment
+        chai.assert.typeOf(callStructureFragment, 'array')
+        //It prepends an object to the array but keeps the original array values.
+        //The addition of a
+        chai.assert.exists(callStructureFragment[0][subAttribute])
+        chai.assert.typeOf(callStructureFragment[0][subAttribute], "object")
+        chai.assert.exists(callStructureFragment[0][subAttribute]._sparQL)
+        chai.assert.typeOf(callStructureFragment[0][subAttribute]._sparQL, "array")
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL.length, 1)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[0].class, result.className)
+        chai.assert.equal(callStructureFragment[0][subAttribute]._sparQL[0].property, result.propertyName)
+        chai.assert.exists(callStructureFragment[0][subAttribute]._value)
+    })
+})
+
+
+function setupCallStructureForResultVerification(moduleName,callName,callJSON) {
+    callJSON.result.data[0].programName = {
+        "_sparQL": [
+            {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasName"
+            }
+        ],
+        "_value": "Tomatillo_Breeding_Program"
+    }
+    //Sets layer one test on object
+    //Sets layer two test on object
+    callJSON.result.data[0].additionalInfo= {
+        "additionalProp1": {
+            "_sparQL": [
+                {
+                    "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                    "property": "hasName"
+                }
+            ],
+            "_value": "string"
+        },
+        "additionalProp2": {
+            "_sparQL": [
+                {
+                    "class": "http://purl.org/ppeo/PPEO.owl#study",
+                    "property": "hasPart"
+                },
+                {
+                    "class": "http://purl.org/ppeo/PPEO.owl#study",
+                    "property": "hasName"
+                }
+            ],
+            "_value": "string"
+        },
+        "additionalProp3":"Testing string"
+    }
+    callJSON.result.data[0].externalReferences = [
+        {
+            "referenceID": {
+                "_sparQL": [
+                    {
+                        "class": "http://purl.org/ppeo/PPEO.owl#role",
+                        "property": "hasPersonWithRole"
+                    },
+                    {
+                        "class": "nodeID://b11077",
+                        "property": "isRoleOfPersonIn"
+                    }
+                ],
+                "_value": "doi:10.155454/12341234"
+            },
+            "referenceSource": {
+                "_sparQL": [
+                    {
+                        "class": "http://purl.org/ppeo/PPEO.owl#study",
+                        "property": "hasPart"
+                    },
+                    {
+                        "class": "http://purl.org/ppeo/PPEO.owl#study",
+                        "property": "hasName"
+                    }
+                ],
+                "_value": "DOI"
+            }
+        },
+        {
+            "referenceID": "http://purl.obolibrary.org/obo/ro.owl",
+            "referenceSource": "OBO Library"
+        },
+        {
+            "referenceID": "75a50e76",
+            "referenceSource": "Remote Data Collection Upload Tool"
+        }
+    ]
+    fs.writeFileSync(`components/modules/${moduleName}/maps/${callName}`, JSON.stringify(callJSON, null, 2))
+}
+
+
+describe("Test json output", function () {
+    this.timeout(10000)
+    //Hardcoded expectations, based on vitis dataset
+
+
+    let {callPrettyJSON,callJSON} = tools.getJSON(moduleName,callName)
+    let backupJSON=callJSON
+    let resultJSON;
+
+    before(async ()=>{
+        setupCallStructureForResultVerification(moduleName,callName,callJSON)
+        resultJSON=await tools.getResultJSON(moduleName,callName)
+    })
+    it("Test json output", async function () {
+        chai.assert.exists(resultJSON)
+    })
+    it("Direct attribute single layer", async function () {
+        chai.assert.exists(resultJSON.result.data[0].programName)
+        chai.assert.typeOf(resultJSON.result.data[0].programName,"string")
+        chai.assert.equal(resultJSON.result.data[0].programName, "THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVARS OF THE PORTUGUESE COLLECTION")
+    })
+    it("Direct attribute multiple layers", async function () {
+        //chai.assert.exists(resultJSON.result.data[0].programName)
+        //chai.assert.typeOf(resultJSON.result.data[0].programName,"string")
+        //chai.assert.equal(resultJSON.result.data[0].programName._value, "THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVARS OF THE PORTUGUESE COLLECTION")
+    })
+    it("Object attribute single layer", async function () {
+        chai.assert.exists(resultJSON.result.data[0].additionalInfo)
+        chai.assert.typeOf(resultJSON.result.data[0].additionalInfo,"object")
+        chai.assert.exists(resultJSON.result.data[0].additionalInfo.additionalProp1)
+        chai.assert.typeOf(resultJSON.result.data[0].additionalInfo.additionalProp1,"string")
+        chai.assert.equal(resultJSON.result.data[0].additionalInfo.additionalProp1, "THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVARS OF THE PORTUGUESE COLLECTION")
+    })
+    it("Object attribute multiple layers", async function () {
+        chai.assert.exists(resultJSON.result.data[0].additionalInfo)
+        chai.assert.typeOf(resultJSON.result.data[0].additionalInfo,"object")
+        chai.assert.exists(resultJSON.result.data[0].additionalInfo.additionalProp2)
+        chai.assert.typeOf(resultJSON.result.data[0].additionalInfo.additionalProp2,"string")
+        chai.assert.equal(resultJSON.result.data[0].additionalInfo.additionalProp2, "THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVAR Alfrocheiro T OF THE PORTUGUESE COLLECTION")
+    })
+
+    it("Array attribute single layer", async function () {
+
+    })
+
+    it("Array attribute multiple layers", async function () {
+        chai.assert.exists(resultJSON.result.data[0].externalReferences)
+        chai.assert.typeOf(resultJSON.result.data[0].externalReferences,"array")
+        chai.assert.equal(resultJSON.result.data[0].externalReferences.length,34)
+        chai.assert.typeOf(resultJSON.result.data[0].externalReferences[0].referenceSource,"THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVAR Alfrocheiro T OF THE PORTUGUESE COLLECTION")
+        chai.assert.equal(resultJSON.result.data[0].externalReferences[33].referenceSource, "THERMAL REQUIREMENTS, DURATION AND PRECOCITY OF PHENOLOGICAL STAGES OF GRAPEVINE CULTIVAR Viosinho B OF THE PORTUGUESE COLLECTION")
+    })
+    after(function () {
+        fs.writeFileSync(`components/modules/${moduleName}/maps/${callName}`, JSON.stringify(backupJSON, null, 2))
+    })
+
+})
+
+
+//Validate output call
