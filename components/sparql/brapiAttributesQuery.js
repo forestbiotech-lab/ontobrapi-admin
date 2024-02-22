@@ -158,7 +158,7 @@ async function parseCallStructure(callStructure,sparqlQuerySelectors,triples,arr
     //from result or data
     let resultStructure=JSON.parse(JSON.stringify(callStructure))
     for await ([key,value] of Object.entries(callStructure)){
-        if(isOntologicalTerm(value) === true){
+        if(isOntologicalTerm(value) === true){ //Has _sparQL object i.e. has been attributed something
             let loopQueryParams=Object.assign({},sparqlQuerySelectors)
             let loopKey=key
             let loopValue=value["_sparQL"]
