@@ -25,10 +25,35 @@ async function loadSubItemObject() {
                 } else {
                     return {}
                 }
-            },
+            }
+
         },
         data: function () {
-            return {}
+            return {
+                allowChangeName:false,
+                newAttribute:""
+            }
+        },
+        methods: {
+            activateChangeAttributeName(){
+                this.allowChangeName=true
+            },
+            setNewAttribute: function(val){
+                if(this.allowChangeName && this.newAttribute!==""){
+                    //this.mapping[this.newAttribute]=this.mapping[this.subItem]
+                    this.$set(this.mapping,this.newAttribute,this.mapping[this.subItem])
+                    delete this.mapping[this.subItem]
+                    //badge placement
+                    saveCallStruture(event.target)
+                    this.subItem=this.newAttribute
+                }
+
+            },
+            changeAttributeName(){
+                event.target
+
+            }
+
         }
     })
 }
@@ -267,6 +292,13 @@ async function dynamicLayer(name) {
             }
         },
         methods: {
+            addAttribute(attribute,valueType){
+                if(valueType=="object"){
+                    this.$set(this.callStructure.result.data[0][attribute],"__new_attribute__","")
+                }else if(valueType=="array"){
+                    //TODO not implemented
+                }
+            },
             valueType(attribute) {
                 let key = this.callStructure.result.data[0][attribute]
                 if (typeof key === "object")
