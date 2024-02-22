@@ -8,6 +8,8 @@ block content
                     span(v-if="subType=='object'")
                         span.badge.bg-success(v-if="mapping[subItem]._sparQL") {{ mapping[subItem]._value }}
                         span.badge.bg-success(v-else) {{ mapping[subItem]  }}
+                        span.badge.bg-secondary(@click="activateChangeAttributeName") Change name
+                        input.form-control(type="text" v-if="allowChangeName", v-model="newAttribute" @blur="setNewAttribute")
             .collapse.card.mx-2.px-2.pt-3(:id="attribute+'-'+subItem")
                 p Sub object
                 div(v-if="['object','array'].includes(subType)")

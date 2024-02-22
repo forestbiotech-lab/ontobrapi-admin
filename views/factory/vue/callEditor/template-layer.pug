@@ -21,7 +21,8 @@ block content
             .form-group
                 label Class
                     .badge-holder
-                input.form-control(id=`layer0-class` type="text",name="class",v-model="className",@change="saveInputValue(null,'class')")
+                //Setting value directly has been deprecated since setValueforLayer is required first
+                input.form-control(id=`layer0-class` type="text",name="class",v-model="className",@change="saveInputValue('null','class')")
             .form-group
                 label Property
                     .badge-holder
