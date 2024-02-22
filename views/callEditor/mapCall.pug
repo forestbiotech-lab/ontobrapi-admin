@@ -47,6 +47,8 @@ block content
                                     | {{ callStructure.result.data[0][attribute] }}
                                 span.badge.bg-success(v-if="valueType(attribute)=='object'")
                                     | object
+                                span.badge.bg-primary(v-if="valueType(attribute)=='object'" @click="addAttribute(attribute,'object')")
+                                    | +
                                 span.badge.bg-success(v-if="valueType(attribute)=='array'")
                                     | array
                                 span.badge.bg-success(v-if="valueType(attribute)=='directProcessed'")
