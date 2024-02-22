@@ -35,26 +35,100 @@
     "result": {
         "data": [
             {
-                "abbreviation": {
+                "abbreviation": "P2",
+                "additionalInfo": {
+                    "License": {
+                        "_sparQL": [
+                            {
+                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                                "property": "hasLicense"
+                            }
+                        ],
+                        "_value": "string"
+                    },
+                    "MIAPPEversion": {
+                        "_sparQL": [
+                            {
+                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                                "property": "hasMIAPPEVersion"
+                            }
+                        ],
+                        "_value": "string"
+                    },
+                    "associatedPublication": {
+                        "_sparQL": [
+                            {
+                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                                "property": "hasAssociatedPublication"
+                            }
+                        ],
+                        "_value": "Testing string"
+                    },
+                    "submissionDate": {
+                        "_sparQL": [
+                            {
+                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                                "property": "hasSubmissionDate"
+                            }
+                        ],
+                        "_value": ""
+                    },
+                    "publicReleaseDate": {
+                        "_sparQL": [
+                            {
+                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                                "property": "hasPublicReleaseDate"
+                            }
+                        ],
+                        "_value": ""
+                    }
+                },
+                "commonCropName": {
                     "_sparQL": [
                         {
-                            "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                            "property": "hasLicense"
+                            "class": "http://purl.org/ppeo/PPEO.owl#study",
+                            "property": "hasPart"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+                            "property": "hasBiologicalMaterial"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+                            "property": "hasTaxonIdentifier"
                         }
                     ],
-                    "_value": "P2"
+                    "_value": "Tomatillo"
                 },
-                "additionalInfo": {
-                    "additionalProp1": "string",
-                    "additionalProp2": "string",
-                    "additionalProp3": "string"
-                },
-                "commonCropName": "Tomatillo",
                 "documentationURL": "https://wiki.brapi.org",
                 "externalReferences": [
                     {
-                        "referenceID": "doi:10.155454/12341234",
-                        "referenceSource": "DOI"
+                        "referenceID": {
+                            "_sparQL": [
+                                {
+                                    "class": "http://purl.org/ppeo/PPEO.owl#role",
+                                    "property": "hasPersonWithRole"
+                                },
+                                {
+                                    "class": "nodeID://b11077",
+                                    "property": "isRoleOfPersonIn"
+                                }
+                            ],
+                            "_value": "doi:10.155454/12341234"
+                        },
+                        "referenceSource": {
+                            "_sparQL": [
+                                {
+                                    "class": "http://purl.org/ppeo/PPEO.owl#study",
+                                    "property": "hasPart"
+                                },
+                                {
+                                    "class": "http://purl.org/ppeo/PPEO.owl#study",
+                                    "property": "hasName"
+                                }
+                            ],
+                            "_value": "DOI"
+                        }
                     },
                     {
                         "referenceID": "http://purl.obolibrary.org/obo/ro.owl",
@@ -65,8 +139,40 @@
                         "referenceSource": "Remote Data Collection Upload Tool"
                     }
                 ],
-                "leadPersonDbId": "fe6f5c50",
-                "leadPersonName": "Bob Robertson",
+                "leadPersonDbId": {
+                    "_sparQL": [
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#study",
+                            "property": "hasPart"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#person",
+                            "property": "hasPersonWithRole"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#person",
+                            "property": "hasIdentifier"
+                        }
+                    ],
+                    "_value": "fe6f5c50"
+                },
+                "leadPersonName": {
+                    "_sparQL": [
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#study",
+                            "property": "hasPart"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#person",
+                            "property": "hasPersonWithRole"
+                        },
+                        {
+                            "class": "http://purl.org/ppeo/PPEO.owl#person",
+                            "property": "hasName"
+                        }
+                    ],
+                    "_value": "Bob Robertson"
+                },
                 "objective": {
                     "_sparQL": [
                         {
