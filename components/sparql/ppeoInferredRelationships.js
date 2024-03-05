@@ -46,6 +46,9 @@ function objectProperties(className) {
         }}`
     //TODO Check if this has the right origin ou destination
     return sparqlQuery(query).then(result=>{
+        if (className=="study") {
+            result.push({ ObjectProperty: "http://purl.org/ppeo/PPEO.owl#hasPersonWithRole", destination: "http://purl.org/ppeo/PPEO.owl#Person"})
+        }
         result.map(value=> {
             value.name = value.ObjectProperty.split("#")[1]
             value.label = value.ObjectProperty.split("#")[1]
@@ -54,6 +57,7 @@ function objectProperties(className) {
             value.className=value.class.split("#")[1] || ""
             value.classOntology=value.class.split("#")[0]
         })
+
         return result
     }).catch(err=>{
         return ["Error",err]
