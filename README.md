@@ -79,3 +79,19 @@ Here is an example of how to define an N-triples file that imports two ontologie
 ex1:subject ex1:predicate ex1:object .
 ex2:subject ex2:predicate ex2:object .
 In this example, the ontology1.ntriples and ontology2.ntriples files are imported into the current file. The ex1: and ex2: prefixes are then defined to reference the namespaces of the two ontologies. Finally, the triples from the current file are defined using the prefixes.
+
+
+## Caching
+Caching of the calls is done via MongoDB. The calls are serialized based on the request and the results are provisionally stored and can be filtered furthermore. 
+
+To connect to the mongoDB server you can use mongosh `mongosh "mongodb://localhost" --apiVersion 1 --username <<username>> --password <<password>>`  as documented here: https://www.mongodb.com/docs/mongodb-shell/ 
+
+To perform CRUD operation check: https://www.mongodb.com/docs/mongodb-shell/crud/#std-label-mdb-shell-crud
+
+Select the appropriate database: `use <<db>>`:
+
+- Insert: Use `db.<<db name>>.insertOne()`
+- Query: Use `db.<<db name>>.find()`
+
+Pagination
+https://www.mongodb.com/docs/atlas/atlas-search/tutorial/pagination-tutorial/

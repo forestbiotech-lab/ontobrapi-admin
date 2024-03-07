@@ -1,6 +1,7 @@
 const SparqlClient = require('sparql-http-client')
 const fs = require("fs");
-
+const cache = require("./../db/cache");
+const filterDB = require("./../db/filter");
 const sparql=require('./../../.config').sparql
 
 let host=sparql.host
@@ -242,7 +243,6 @@ function isOntologicalTerm(value){
 function getCallStructure(moduleName,callName){
     //Get from componets/modules/genotyping/schemes/${name}
     let path="components/modules"
-
     let callStructurePath=`${path}/${moduleName}/maps/${callName}`
     let callStructure
     try{
@@ -256,7 +256,43 @@ function getCallStructure(moduleName,callName){
 
 //    <http://brapi.biodata.pt/raiz/obs_000122> ppeo:hasObservedSubject ?obs_unit .
 
-module.exports = getAnchors;
+module.exports = async function (servers,moduleName,callName,requestParam,requestTrip) {
+    let queryResults={callStructure:await cache.callStructure.retrieve(callName,moduleName,getCallStructure)}
+    requestParam=filterDB(requestParam,queryResults)
+    let cacheRetrieval = await cache.query(servers,moduleName,callName,requestParam,requestTrip)
+
+
+    //Save callStructure in cache
+
+
+    if(cacheRetrieval.found === false){
+        let callStructure=queryResults.callStructure
+        requestParam={}
+        queryResults=await getAnchors(servers,moduleName,callName,requestParam,requestTrip)
+        queryResults.callStructure=callStructure
+        queryResults.callStructure.metadata.pagination.totalCount = queryResults.results.length
+        queryResults.callStructure.metadata.pagination.totalPages = Math.ceil(
+            ( queryResults.results.length / queryResults.callStructure.metadata.pagination.pageSize) )
+
+        //TODO deal with filtering on call without cache
+        return Promise.all(queryResults.results).then(results=>{
+            let id=
+                cache.define(callName,results)
+            //TODO do something with this id
+            queryResults.callStructure.result.data=results
+            return queryResults.callStructure
+        })
+
+    }else{
+        queryResults.callStructure.metadata.pagination.totalCount = cacheRetrieval.totalResults
+        queryResults.callStructure.metadata.pagination.totalPages = Math.ceil(cacheRetrieval.totalResults / queryResults.callStructure.metadata.pagination.pageSize)
+        queryResults.callStructure.result.data = cacheRetrieval.data
+        return queryResults.callStructure
+    }
+
+
+
+}
 
 
 
