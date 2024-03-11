@@ -7,6 +7,7 @@ let inferredRelationship = require('./../components/sparql/ppeoInferredRelations
 const listClasses = require('./../components/sparql/ppeoListClasses')
 const freeQuery = require('./../components/sparql/freeQuery')
 const restructuring = require("../components/helpers/restructuring");
+const cache = require('../components/db/cache');
 // query/
 
 /* GET users listing. */
@@ -108,6 +109,21 @@ WHERE {
         res.writeHead( 400, message, {'content-type' : 'text/plain'});
         res.end(message)
     })
+})
+
+router.get("/cache/createdAt",async (req,res)=>{
+    let now = Date.now()
+    const referer = req.get('Referer') || req.get('referrer');
+    let callName = referer.trimEnd("/").split("/").splice(-2)[0]
+    let createdAt= await cache.age(callName)
+
+    res.json({ageHH:Math.round((now-createdAt)/1000/60/60),createdAt})
+})
+router.get("/cache/clear",async (req,res)=>{
+    let referer = req.get('Referer') || req.get('referrer');
+    let callName = referer.trimEnd("/").split("/").splice(-2)[0]
+    let clear= await cache.clear(callName)
+    res.json({clear})
 })
 
 module.exports = router;

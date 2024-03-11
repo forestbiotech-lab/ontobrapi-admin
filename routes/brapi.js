@@ -127,18 +127,11 @@ router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next
       activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
     }
     let {moduleName,callName}=req.params
-    let queryResults=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
-    Promise.all(queryResults.results).then(result=>{
-      queryResults.callStructure.result.data=result
-      res.json(queryResults.callStructure)
-    }).catch(err=>{
-      throw err
-      //res.json(err)
-    })
+    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
+    res.json(callStructure)
   }catch(err){
     res.json(err)
   }
-
 })
 
 router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
@@ -152,13 +145,8 @@ router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
       activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
     }
     let {moduleName,callName}=req.params
-    let queryResults=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
-    Promise.all(queryResults.results).then(result=>{
-      queryResults.callStructure.result.data=result
-      res.render( "callEditor/callGUI",{data:queryResults.callStructure,moduleName,listCalls,listModules,mapCall})
-    }).catch(err=>{
-      throw err
-    })
+    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
+    res.render( "callEditor/callGUI",{data:callStructure,moduleName,listCalls,listModules,mapCall})
   }catch(err){
     defaultCall.metadata.status[0].message=err.message
     defaultCall.metadata.status[0].messageType="Error"

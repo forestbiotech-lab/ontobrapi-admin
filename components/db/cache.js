@@ -69,7 +69,7 @@ async function query(servers,moduleName,callName,requestParam,requestTrip) {
             })
         } else {
             //cache duration elapsed
-            let deleteResult = await collection.deleteMany({_createdAt: callStructure[0]._createdAt})
+            let deleteResult = await clear(callName)
             callStructure = []
         }
     }
@@ -123,11 +123,29 @@ async function count(callName){
     await db.disconnect()
     return count
 }
+async function age(callName){
+    let db=await new DB();
+    let collection=db.client.collection(callName)
+    let age=await collection.findOne({})
+    if(age) age=age._createdAt || Date.now()+1000*60*60
+    else age=Date.now()+1000*60*60
+    await db.disconnect()
+    return age
+}
 
+async function clear(callName){
+    let db=await new DB();
+    let collection=db.client.collection(callName)
+    let age=await collection.deleteMany({})
+    await db.disconnect()
+    return age
+}
 
 module.exports = {
     query,
     define,
     callStructure:{retrieve,store},
-    count
+    count,
+    age,
+    clear
 }

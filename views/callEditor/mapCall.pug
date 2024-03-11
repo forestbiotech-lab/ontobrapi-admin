@@ -38,6 +38,9 @@ block content
             .position-relative
                 .spinner-grow.position-absolute.translate-middle.start-50(role="status")
                     span.visually-hidden Loading...
+            .d-flex.flex-row-reverse
+                    button#clearCache.btn.btn-secondary(@click="clearCache") clear cache
+                    span.btn {{ cacheCreatedAt.ageHH }} hours
             table.table(v-if="callStructure.result").d-none
                 tr(v-for="attribute in Object.keys(callStructure.result.data[0])",:key="attribute")
                     td.pt-3(:class="classType(attribute)",:attribute="attribute")

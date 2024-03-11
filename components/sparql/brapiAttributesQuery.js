@@ -6,6 +6,9 @@ const sparql=require('./../../.config').sparql
 
 let host=sparql.host
 let port=sparql.port
+
+//TODO override sparql query limits and pagination
+
 const DEFAULT_LIMIT=1000
 const endpointUrl = `http://${host}:${port}/sparql`
 //should-sponge=soft
@@ -57,7 +60,7 @@ function processQuery(query){
     })
 }
 
-
+//TODO override sparql query limits and pagination
 function sparqlQuery(sparqlQueryParams,triples,options,count) {
     let offset;
     if (options.limit===undefined){ options.limit=DEFAULT_LIMIT; options.page=0; }
@@ -195,9 +198,11 @@ async function parseCallStructure(callStructure,sparqlQuerySelectors,triples,arr
                             entry[loopKey]=queryResult[index][loopQueryParams.query1.replace("?","")].replace(brapi,devServer)
                         }
                     }else{
-                        resultStructure._result_array_=queryResult.map(item=>{
-                            return {[loopKey]:item[loopQueryParams.query1.replace("?","")].replace(brapi,devServer)}
-                        })
+                        if(queryResult.length>0){
+                            resultStructure._result_array_=queryResult.map(item=>{
+                                return {[loopKey]:item[loopQueryParams.query1.replace("?","")].replace(brapi,devServer)}
+                            })
+                        }
                     }
 
                 }else

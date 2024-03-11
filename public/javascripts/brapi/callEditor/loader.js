@@ -284,7 +284,8 @@ async function dynamicLayer(name) {
             objectProperties: {},
             mapping: {},
             className: $('#mapping').attr('anchor'),
-            callStructure: {}
+            callStructure: {},
+            cacheCreatedAt:0,
         },
         computed: {
             isArray() {
@@ -310,6 +311,16 @@ async function dynamicLayer(name) {
                         return "object"
                     }
                 else return "direct"
+            },
+            async clearCache(){
+                let result = await $.get("/admin/query/cache/clear")
+                if(result.clear) {
+                    //displayToast(`Cleared ${result.clear.deletedCount} cache results`)
+                    if(result.clear.acknowledged == true) location.reload()
+                }else{
+                    //displayToast(`Error clearing cache`)
+                }
+
             },
             classType(attribute) {
                 if (this.valueType(attribute) == "array") {
@@ -341,6 +352,7 @@ async function dynamicLayer(name) {
             let that = this
             $('#mapping table').removeClass('d-none')
             $('#mapping .spinner-grow').hide()
+            this.cacheCreatedAt = await $.get(`/admin/query/cache/createdAt`)
             /*window.vmapping.$children.filter(child=> child.$vnode.tag.startsWith("vue-component"))
                 .forEach(
                     layer=>{
