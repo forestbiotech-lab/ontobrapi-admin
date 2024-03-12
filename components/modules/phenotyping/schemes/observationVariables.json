@@ -1,0 +1,202 @@
+{
+  "_anchor": {
+    "class": "observation_unit",
+    "s": "?observation",
+    "p": "rdf:type",
+    "o": "ppeo:observation_unit"
+  },
+  "@context": [
+    "https://brapi.org/jsonld/context/metadata.jsonld"
+  ],
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 10,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Request accepted, response successful",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "additionalInfo": {},
+        "commonCropName": "Maize",
+        "contextOfUse": [
+          "Trial evaluation",
+          "Nursery evaluation"
+        ],
+        "defaultValue": "2.0",
+        "documentationURL": "https://wiki.brapi.org/documentation.html",
+        "externalReferences": [
+          {
+            "referenceId": "doi:10.155454/12341234",
+            "referenceSource": "DOI"
+          },
+          {
+            "referenceId": "75a50e76",
+            "referenceSource": "Remote Data Collection Upload Tool"
+          }
+        ],
+        "growthStage": "flowering",
+        "institution": "The BrAPI Institute",
+        "language": "en",
+        "method": {
+          "additionalInfo": {},
+          "bibliographicalReference": "Smith, 1893, Really Cool Paper, Popular Journal",
+          "description": "A measuring tape was used",
+          "externalReferences": [
+            {
+              "referenceId": "doi:10.155454/12341234",
+              "referenceSource": "DOI"
+            },
+            {
+              "referenceId": "75a50e76",
+              "referenceSource": "Remote Data Collection Upload Tool"
+            }
+          ],
+          "formula": "a^2 + b^2 = c^2",
+          "methodClass": "Measurement",
+          "methodDbId": "0adb2764",
+          "methodName": "Measuring Tape",
+          "methodPUI": "http://my-traits.com/trait/CO_123:0000212",
+          "ontologyReference": {
+            "documentationLinks": [
+              {
+                "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                "type": "OBO"
+              }
+            ],
+            "ontologyDbId": "6b071868",
+            "ontologyName": "The Crop Ontology",
+            "version": "7.2.3"
+          }
+        },
+        "observationVariableDbId": "b9b7edd1",
+        "observationVariableName": "Variable Name",
+        "observationVariablePUI": "http://my-traits.com/trait/CO_123:0009012",
+        "ontologyReference": {
+          "documentationLinks": [
+            {
+              "URL": "http://purl.obolibrary.org/obo/ro.owl",
+              "type": "OBO"
+            }
+          ],
+          "ontologyDbId": "6b071868",
+          "ontologyName": "The Crop Ontology",
+          "version": "7.2.3"
+        },
+        "scale": {
+          "additionalInfo": {},
+          "dataType": "Numerical",
+          "decimalPlaces": 2,
+          "externalReferences": [
+            {
+              "referenceId": "doi:10.155454/12341234",
+              "referenceSource": "DOI"
+            },
+            {
+              "referenceId": "75a50e76",
+              "referenceSource": "Remote Data Collection Upload Tool"
+            }
+          ],
+          "ontologyReference": {
+            "documentationLinks": [
+              {
+                "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                "type": "OBO"
+              }
+            ],
+            "ontologyDbId": "6b071868",
+            "ontologyName": "The Crop Ontology",
+            "version": "7.2.3"
+          },
+          "scaleDbId": "af730171",
+          "scaleName": "Meters",
+          "scalePUI": "http://my-traits.com/trait/CO_123:0000112",
+          "units": "m",
+          "validValues": {
+            "categories": [
+              {
+                "label": "low",
+                "value": "0"
+              },
+              {
+                "label": "medium",
+                "value": "5"
+              },
+              {
+                "label": "high",
+                "value": "10"
+              }
+            ],
+            "max": 9999,
+            "maximumValue": "9999",
+            "min": 2,
+            "minimumValue": "2"
+          }
+        },
+        "scientist": "Dr. Bob Robertson",
+        "status": "recommended",
+        "submissionTimestamp": "2018-01-01T14:47:23-0600",
+        "synonyms": [
+          "Maize Height",
+          "Stalk Height",
+          "Corn Height"
+        ],
+        "trait": {
+          "additionalInfo": {},
+          "alternativeAbbreviations": [
+            "H",
+            "PH",
+            "H1"
+          ],
+          "attribute": "height",
+          "attributePUI": "http://my-traits.com/trait/PO:00012345",
+          "entity": "Stalk",
+          "entityPUI": "http://my-traits.com/trait/PATO:00098765",
+          "externalReferences": [
+            {
+              "referenceId": "doi:10.155454/12341234",
+              "referenceSource": "DOI"
+            },
+            {
+              "referenceId": "75a50e76",
+              "referenceSource": "Remote Data Collection Upload Tool"
+            }
+          ],
+          "mainAbbreviation": "PH",
+          "ontologyReference": {
+            "documentationLinks": [
+              {
+                "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                "type": "OBO"
+              }
+            ],
+            "ontologyDbId": "6b071868",
+            "ontologyName": "The Crop Ontology",
+            "version": "7.2.3"
+          },
+          "status": "recommended",
+          "synonyms": [
+            "Height",
+            "Plant Height",
+            "Stalk Height",
+            "Canopy Height"
+          ],
+          "traitClass": "phenological",
+          "traitDbId": "9b2e34f5",
+          "traitDescription": "The height of the plant",
+          "traitName": "Height",
+          "traitPUI": "http://my-traits.com/trait/CO_123:0000012"
+        }
+      }
+    ]
+  }
+}
