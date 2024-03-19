@@ -338,8 +338,8 @@
                 "observationUnitsDescription": {
                     "_sparQL": [
                         {
-                            "class": "ppeo:observation_unit",
-                            "property": "Grape_Yield_Trial"
+                            "class": "http://purl.org/ppeo/PPEO.owl#study",
+                            "property": "hasObservationUnitDescription"
                         }
                     ],
                     "_value": "Observation units consisted in individual plots themselves consisting of a row of 15 plants at a density of approximately six plants per square meter."

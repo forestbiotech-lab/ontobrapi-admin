@@ -101,43 +101,10 @@
                     "_value": "Tomatillo"
                 },
                 "documentationURL": "https://wiki.brapi.org",
-                "externalReferences": [
-                    {
-                        "referenceID": {
-                            "_sparQL": [
-                                {
-                                    "class": "http://purl.org/ppeo/PPEO.owl#role",
-                                    "property": "hasPersonWithRole"
-                                },
-                                {
-                                    "class": "nodeID://b11077",
-                                    "property": "isRoleOfPersonIn"
-                                }
-                            ],
-                            "_value": "doi:10.155454/12341234"
-                        },
-                        "referenceSource": {
-                            "_sparQL": [
-                                {
-                                    "class": "http://purl.org/ppeo/PPEO.owl#study",
-                                    "property": "hasPart"
-                                },
-                                {
-                                    "class": "http://purl.org/ppeo/PPEO.owl#study",
-                                    "property": "hasName"
-                                }
-                            ],
-                            "_value": "DOI"
-                        }
-                    },
-                    {
-                        "referenceID": "http://purl.obolibrary.org/obo/ro.owl",
-                        "referenceSource": "OBO Library"
-                    },
-                    {
-                        "referenceID": "75a50e76",
-                        "referenceSource": "Remote Data Collection Upload Tool"
-                    }
+                "externalReferences": [ {
+                    "ref":"",
+                    "ref2": ""
+                }
                 ],
                 "leadPersonDbId": {
                     "_sparQL": [

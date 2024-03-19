@@ -74,15 +74,7 @@
                     }
                 ],
                 "documentationURL": "https://wiki.brapi.org",
-                "endDate": {
-                    "_sparQL": [
-                        {
-                            "class": "ppeo:study",
-                            "property": "Grape_Yield_Trial"
-                        }
-                    ],
-                    "_value": "2022-06-06T22:37:31.237Z"
-                },
+                "endDate": "2022-06-06T22:37:31.237Z",
                 "environmentParameters": [
                     {
                         "description": "the soil type was clay",
@@ -95,16 +87,8 @@
                     }
                 ],
                 "experimentalDesign": {
-                    "_sparQL": [
-                        {
-                            "class": "Grape_Yield_Trial",
-                            "property": "Grape_Yield_Trial"
-                        }
-                    ],
-                    "_value": {
-                        "PUI": "CO_715:0000145",
-                        "description": "Lines were repeated twice at each location using a complete block design. In order to limit competition effects, each block was organized into four sub-blocks corresponding to earliest groups based on a prior information."
-                    }
+                    "PUI": "CO_715:0000145",
+                    "description": "Lines were repeated twice at each location using a complete block design. In order to limit competition effects, each block was organized into four sub-blocks corresponding to earliest groups based on a prior information."
                 },
                 "externalReferences": [
                     {

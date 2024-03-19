@@ -90,8 +90,10 @@ To perform CRUD operation check: https://www.mongodb.com/docs/mongodb-shell/crud
 
 Select the appropriate database: `use <<db>>`:
 
-- Insert: Use `db.<<db name>>.insertOne()`
-- Query: Use `db.<<db name>>.find()`
+- Insert: Use `db.<<collection>>.insertOne()`
+- Query: Use `db.<<collection>>.find()`
 
 Pagination
 https://www.mongodb.com/docs/atlas/atlas-search/tutorial/pagination-tutorial/
+
+- Aggredation: Use `db.<<collection>>.aggregation([{"$match":{}},{"$skip":0},{"$limit":1000}])` $skip 
