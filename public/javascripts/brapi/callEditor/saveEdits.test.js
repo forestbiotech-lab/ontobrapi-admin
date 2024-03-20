@@ -1,3 +1,8 @@
+////// NOT USED //////
+/////  Has interesting implementations of virtual DOMs with pug and vue ////////
+
+
+
 var expect = require('chai').expect
 const jQuery=require("jquery")
 //global['$']=jQuery
@@ -13,9 +18,10 @@ const vSelect =require("vue-select")
 
 
 const port=3001 //gateway on docker
-const classProperties = require("../../../../components/sparql/ppeoClassProperties");
-const inferredRelationships = require("../../../../components/sparql/ppeoInferredRelationships");
+const classProperties = require("../../../../components/sparql/baseOntologyClassProperties");
+const inferredRelationships = require("../../../../components/sparql/baseOntologyInferredRelationships");
 
+const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
 //Setup DOM from pug file
 //html=pug.renderFile("./views/factory/vue/callEditor/template-layer.pug",{pretty:true})
 
@@ -35,9 +41,9 @@ let inside_html=prettyHtml(json)
 let anchorProperties={objectProperties:[],dataProperties:[]}
 try{
     //mock unnecessary
-    //anchorProperties=await classProperties(className)
-    //anchorProperties.objectProperties=await inferredRelationships.objectProperties(className)
-    //anchorProperties.dataProperties=await inferredRelationships.dataProperties(className)
+    //anchorProperties=await classProperties(className,baseOntologyURI)
+    //anchorProperties.objectProperties=await inferredRelationships.objectProperties(className,baseOntologyURI)
+    //anchorProperties.dataProperties=await inferredRelationships.dataProperties(className,baseOntologyURI)
 }catch(err){
     console.log(err)
     anchorProperties=[]
