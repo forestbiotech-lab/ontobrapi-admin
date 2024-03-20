@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 let xsd = require("@ontologies/xsd")
-let classProperties = require('./../components/sparql/ppeoClassProperties')
-let inferredRelationship = require('./../components/sparql/ppeoInferredRelationships')
-const listClasses = require('./../components/sparql/ppeoListClasses')
+let classProperties = require('../components/sparql/baseOntologyClassProperties')
+let inferredRelationship = require('../components/sparql/baseOntologyInferredRelationships')
+const listClasses = require('../components/sparql/baseOntologyListClasses')
 const freeQuery = require('./../components/sparql/freeQuery')
 const restructuring = require("../components/helpers/restructuring");
 const cache = require('../components/db/cache');
 // query/
+
+const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -17,13 +19,13 @@ router.get('/', function(req, res, next) {
 
 router.get('/ppeo/class/:class/properties/', async function(req, res, next) {
     let className=req.params.class
-    let queryResult=await classProperties(className)
+    let queryResult=await classProperties(className,baseOntologyURI)
     res.json(queryResult)
 });
 
 router.get('/ppeo/listClasses',async (req,res)=>{
     try{
-        let classList=await listClasses()
+        let classList=await listClasses(baseOntologyURI)
         if (classList instanceof Error) res.json()
         res.json(classList)
     }catch (e) {
@@ -39,7 +41,7 @@ router.get('/xsd/datatypes/', function(req, res) {
 
 router.get('/inferred/objectProperty/:class',(req,res)=>{
     let className=req.params.class
-    inferredRelationship.objectProperties(className).then(result=>{
+    inferredRelationship.objectProperties(className,baseOntologyURI).then(result=>{
         res.json(result)
     }).catch(err=>{
         let message=err.msg
@@ -49,7 +51,7 @@ router.get('/inferred/objectProperty/:class',(req,res)=>{
 })
 router.get('/inferred/dataProperty/:class',(req,res)=>{
     let className=req.params.class
-    inferredRelationship.dataProperties(className).then(result=>{
+    inferredRelationship.dataProperties(className,baseOntologyURI).then(result=>{
         res.json(result)
     }).catch(err=>{
         let message=err.msg
@@ -60,7 +62,7 @@ router.get('/inferred/dataProperty/:class',(req,res)=>{
 
 router.get('/inferred/dataPropertyRange/:dataProperty',(req,res)=>{
     let dataProperty=req.params.dataProperty
-    inferredRelationship.dataPropertyRange(dataProperty).then(result=>{
+    inferredRelationship.dataPropertyRange(dataProperty,baseOntologyURI).then(result=>{
         res.json(result)
     }).catch(err=>{
         let message=err.msg
@@ -85,6 +87,7 @@ router.get('/list/graphs',(req,res)=>{
     })
 })
 
+//TODO Send logic elsewhere
 router.post("/graph/lookup/summary/",(req,res)=>{
     let graph=req.body.graph
     query=`

@@ -13,18 +13,18 @@ let predicate = 'p'
 
 
 
-function objectProperties(className) {
+function objectProperties(className, baseOntologyURI) {
 
     let query=`
-        PREFIX miappe:  <http://purl.org/ppeo/PPEO.owl#>
+        PREFIX baseOntology:  <${baseOntologyURI}>
         PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX owl:     <http://www.w3.org/2002/07/owl#>
         PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 
         SELECT DISTINCT ?ObjectProperty ?destination
-        FROM <http://purl.org/ppeo/PPEO.owl#> 
+        FROM <${baseOntologyURI}> 
         WHERE {
-            VALUES ?class { miappe:${className} } .
+            VALUES ?class { baseOntology:${className} } .
         {
             ?ObjectProperty            rdf:type            owl:ObjectProperty         .
             ?ObjectProperty    rdfs:domain                 ?class                     .
@@ -46,8 +46,9 @@ function objectProperties(className) {
         }}`
     //TODO Check if this has the right origin ou destination
     return sparqlQuery(query).then(result=>{
+        // TODO fixe hardcoded quick fix
         if (className=="study") {
-            result.push({ ObjectProperty: "http://purl.org/ppeo/PPEO.owl#hasPersonWithRole", destination: "http://purl.org/ppeo/PPEO.owl#Person"})
+            result.push({ ObjectProperty: `${baseOntologyURI}hasPersonWithRole`, destination: `${baseOntologyURI}Person`})
         }
         result.map(value=> {
             value.name = value.ObjectProperty.split("#")[1]
@@ -67,18 +68,18 @@ function objectProperties(className) {
 }
 
 
-function dataPropertyRange(dataProperty){
+function dataPropertyRange(dataProperty,baseOntologyURI){
     let query=`
-         PREFIX miappe:  <http://purl.org/ppeo/PPEO.owl#>
+         PREFIX baseOntology:  <${baseOntologyURI}>
          PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
          PREFIX owl:     <http://www.w3.org/2002/07/owl#>
          PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX schema:  <http://www.w3.org/2001/XMLSchema#>
 
          SELECT DISTINCT  ?range
-         FROM <http://purl.org/ppeo/PPEO.owl#> 
+         FROM <${baseOntologyURI}> 
          WHERE {
-            VALUES ?dataProperty { miappe:${dataProperty} } .
+            VALUES ?dataProperty { baseOntology:${dataProperty} } .
             {
                ?dataProperty     rdf:type          owl:DatatypeProperty   . 
                ?dataProperty     rdfs:range        ?range                 .
@@ -112,19 +113,19 @@ function dataPropertyRange(dataProperty){
         })
     })
 }
-function dataProperties(className) {
+function dataProperties(className,baseOntologyURI) {
 
     let query=`
-         PREFIX miappe:  <http://purl.org/ppeo/PPEO.owl#>
+         PREFIX baseOntology:  <${baseOntologyURI}>
          PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
          PREFIX owl:     <http://www.w3.org/2002/07/owl#>
          PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX schema:  <http://www.w3.org/2001/XMLSchema#>
 
          SELECT DISTINCT ?class ?dataProperty  ?range
-         FROM <http://purl.org/ppeo/PPEO.owl#> 
+         FROM <${baseOntologyURI}> 
          WHERE {
-            VALUES ?class { miappe:${className} } .
+            VALUES ?class { baseOntology:${className} } .
             {
                ?dataProperty     rdf:type          owl:DatatypeProperty   . 
                ?dataProperty     rdfs:domain       ?class                 .

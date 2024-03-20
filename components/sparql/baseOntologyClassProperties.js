@@ -1,5 +1,7 @@
-const SparqlClient = require('sparql-http-client')
+// TODO MIGHT BE DEPRECATED but still in usage by routes/brapi.js
 
+
+const SparqlClient = require('sparql-http-client')
 const sparql=require('./../../.config').sparql
 
 let host=sparql.host
@@ -11,22 +13,33 @@ let subject = 's'
 let object = 'o'
 let predicate = 'p'
 
-function sparqlQuery() {
+//Possible solution
+Array.prototype.forEachAsync = async function (fn) {
+    for (let t of this) { await fn(t) }
+}
+
+Array.prototype.forEachAsyncParallel = async function (fn) {
+    await Promise.all(this.map(fn));
+}
+
+
+function sparqlQuery(className, baseOntologyURI) {
 
     let query =`
-PREFIX ppeo: <http://purl.org/ppeo/PPEO.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-
-  SELECT DISTINCT ?s 
-  FROM ppeo:
+  PREFIX baseOntology: <${baseOntologyURI}>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  
+  SELECT DISTINCT ?property ?class
+  FROM baseOntology:
   WHERE
     {
-     ?s rdf:type owl:Class .
-     BIND(STRBEFORE(str(?s), "#") as ?prefix)
-     FILTER (?prefix = "http://purl.org/ppeo/PPEO.owl")
+     ?individual1  rdf:type   baseOntology:${className} .
+     ?individual1  ?property  ?individual2      .
+     optional{?individual2  rdf:type   ?class } .
+     optional{?individual1  rdf:type   ?class } .
+     filter not exists {?individual1 rdf:type ?individual2 }
     }`
-
+    //Remove properties that are rdf:type
 
     return new Promise((res,rej)=>{
         const client = new SparqlClient({ endpointUrl })
@@ -43,14 +56,6 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 rej(err)
             })
             stream.on('end', err=>{
-                result.forEach((entry,index,array)=>{
-                    try{
-                        array[index]=entry.s.split("#")[1]
-                    }catch (err){
-                        array[index]=""
-                    }
-
-                })
                 res(result)
             })
         }).catch(err=>{

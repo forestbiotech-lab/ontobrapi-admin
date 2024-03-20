@@ -6,14 +6,14 @@ var glob = require('glob')
 //var sparqlQuery = require('.././components/sparql/sparqlQuery')
 const brapiAttributesQuery = require('.././components/sparql/brapiAttributesQuery')
 
-const classProperties = require('./../components/sparql/ppeoClassProperties')
-const inferredRelationships = require('./../components/sparql/ppeoInferredRelationships')
+const classProperties = require('../components/sparql/baseOntologyClassProperties')
+const inferredRelationships = require('../components/sparql/baseOntologyInferredRelationships')
 
 
 const sanitizeParams  = require('./../components/helpers/sanitizeParams')
 const fs = require('fs')
 
-
+const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
 
 
 //TODO implement MongoDB on docker-compose
@@ -87,9 +87,9 @@ router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next
   let anchorProperties={objectProperties:[],dataProperties:[]}
   let classList=[]
   try{
-    anchorProperties=await classProperties(className)
-    anchorProperties.objectProperties=await inferredRelationships.objectProperties(className)
-    anchorProperties.dataProperties=await inferredRelationships.dataProperties(className)
+    anchorProperties=await classProperties(className,baseOntologyURI)
+    anchorProperties.objectProperties=await inferredRelationships.objectProperties(className,baseOntologyURI)
+    anchorProperties.dataProperties=await inferredRelationships.dataProperties(className,baseOntologyURI)
   }catch(err){
     console.log(err)
     anchorProperties=[]

@@ -11,33 +11,22 @@ let subject = 's'
 let object = 'o'
 let predicate = 'p'
 
-//Possible solution
-Array.prototype.forEachAsync = async function (fn) {
-    for (let t of this) { await fn(t) }
-}
-
-Array.prototype.forEachAsyncParallel = async function (fn) {
-    await Promise.all(this.map(fn));
-}
-
-
-function sparqlQuery(className) {
+function sparqlQuery(baseOntologyURI) {
 
     let query =`
-  PREFIX ppeo: <http://purl.org/ppeo/PPEO.owl#>
-  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  
-  SELECT DISTINCT ?property ?class
-  FROM <https://bit.ly/3yJFXvw>
+PREFIX baseOntology: <${baseOntologyURI}>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+  SELECT DISTINCT ?s 
+  FROM baseOntology:
   WHERE
     {
-     ?individual1  rdf:type   ppeo:${className} .
-     ?individual1  ?property  ?individual2      .
-     optional{?individual2  rdf:type   ?class } .
-     optional{?individual1  rdf:type   ?class } .
-     filter not exists {?individual1 rdf:type ?individual2 }
+     ?s rdf:type owl:Class .
+     BIND(STRBEFORE(str(?s), "#") as ?prefix)
+     FILTER (?prefix = "${baseOntologyURI.slice(0,-1)}")
     }`
-    //Remove properties that are rdf:type
+
 
     return new Promise((res,rej)=>{
         const client = new SparqlClient({ endpointUrl })
@@ -54,6 +43,14 @@ function sparqlQuery(className) {
                 rej(err)
             })
             stream.on('end', err=>{
+                result.forEach((entry,index,array)=>{
+                    try{
+                        array[index]=entry.s.split("#")[1]
+                    }catch (err){
+                        array[index]=""
+                    }
+
+                })
                 res(result)
             })
         }).catch(err=>{
