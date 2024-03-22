@@ -72,6 +72,7 @@ router.get('/inferred/dataPropertyRange/:dataProperty',(req,res)=>{
 })
 
 
+//TODO USE query
 router.get('/list/graphs',(req,res)=>{
     query=`SELECT  DISTINCT ?g
             WHERE  { GRAPH ?g {?s ?p ?o} }
@@ -128,5 +129,6 @@ router.get("/cache/clear",async (req,res)=>{
     let clear= await cache.clear(callName)
     res.json({clear})
 })
+
 
 module.exports = router;

@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var glob = require('glob')
-//const sparql=require('.././components/sparql/sparql')
 
-//var sparqlQuery = require('.././components/sparql/sparqlQuery')
+const hash = require("object-hash")
+const datasetManagement = require('../components/sparql/dataset_management')
 const brapiAttributesQuery = require('.././components/sparql/brapiAttributesQuery')
-
 const classProperties = require('../components/sparql/baseOntologyClassProperties')
 const inferredRelationships = require('../components/sparql/baseOntologyInferredRelationships')
 
@@ -201,6 +200,37 @@ router.post('/listcalls/:moduleName/:callName/update', async function(req, res, 
     }
   })
 });
+
+router.get('/dataset/status/:uid', async function(req, res, next) {
+    let uid=req.params.uid
+    let result=await datasetManagement.get("staging",uid)
+    res.render("dataset_status", {result,uid})
+})
+
+router.get('/dataset/list', async function(req, res, next) {
+  result=await datasetManagement.list("staging")
+  res.json(result)
+})
+
+router.post('/dataset/submit/:uid', async function(req, res, next) {
+  const formData=require("./../components/helpers/formData")
+  let form_data = await formData.singleFile(req)
+  let uid=req.params.uid
+  let jsonTriples=JSON.parse(form_data.payload)
+  let hashResult=hash(JSON.stringify(jsonTriples), {algorithm: "md5"})
+  if(hashResult===uid){
+    result=await datasetManagement.add("staging",uid,jsonTriples)
+    let err=null
+    if(result.err){
+      err=result.err
+    }
+    res.json({data: result.data, err})
+  }else{
+    res.json({data:null, err:{message:"hash mismatch",stack:null}})
+  }
+})
+
+
 /*
 function writeFile(file,data){
   return new Promise((res,rej)=>{
