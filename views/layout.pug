@@ -10,6 +10,9 @@ html
 
         link(rel='stylesheet', href='/admin/public/stylesheets/style.css')
     body
+        .row
+            .col-5(style="height:100px;")
+                img(src="/admin/public/images/logo.png" height="100px")
         block content
         script(defer src="/admin/public/webpack/webpack.js")
         script(defer src="/admin/public/webpack/cookieconsent.js")
