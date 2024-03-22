@@ -190,7 +190,7 @@ function sparqlQuery(query){
                 res(result)
             })
         }).catch(err=>{
-            let message=err.msg
+            let message=err.message
             let stack=err.stack
             rej({err,message,stack})
         })

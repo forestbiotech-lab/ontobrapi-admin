@@ -1,0 +1,38 @@
+{
+  "staging":{
+    "prefix": "PREFIX staging: <http://brapi.biodata.pt/staging#>",
+    "url": "http://brapi.biodata.pt/ontobrapi"
+  },
+  "production":{
+    "prefix": "PREFIX production: <http://brapi.biodata.pt/ontobrapi#>",
+    "url": "http://brapi.biodata.pt/ontobrapi"
+  },
+  "ontobrapi":{
+    "prefix": "PREFIX ontobrapi: <http://brapi.biodata.pt/ontobrapi#>",
+    "url": "http://brapi.biodata.pt/ontobrapi"
+  },
+  "miappe":{
+    "prefix": "PREFIX miappe: <http://purl.org/ppeo/PPEO.owl#>",
+    "url": "http://purl.org/ppeo/PPEO.owl#"
+  },
+  "rdf":{
+    "prefix": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+    "url":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  },
+  "xsd":{
+    "prefix": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
+    "url":"http://www.w3.org/2001/XMLSchema#"
+  },
+  "owl":{
+    "prefix": "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
+    "url":"http://www.w3.org/2002/07/owl#"
+  },
+  "void": {
+    "prefix": "PREFIX void: <http://rdfs.org/ns/void#>",
+    "url": "http://rdfs.org/ns/void#"
+  },
+  "rdfs": {
+    "prefix": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+    "url": "http://www.w3.org/2000/01/rdf-schema#"
+  }
+}
