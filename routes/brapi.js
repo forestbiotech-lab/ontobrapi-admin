@@ -201,15 +201,20 @@ router.post('/listcalls/:moduleName/:callName/update', async function(req, res, 
   })
 });
 
+router.get('/dataset/init', async function(req, res, next) {
+  let result=await datasetManagement.init("staging")
+  res.json(result)
+})
+
 router.get('/dataset/status/:uid', async function(req, res, next) {
     let uid=req.params.uid
     let result=await datasetManagement.get("staging",uid)
-    res.render("dataset_status", {result,uid})
+    res.render("dataset/status", {result:result.data,uid})
 })
 
 router.get('/dataset/list', async function(req, res, next) {
   result=await datasetManagement.list("staging")
-  res.json(result)
+  res.render("dataset/list",{result: {staging:result.data,production:[]}})
 })
 
 router.post('/dataset/submit/:uid', async function(req, res, next) {
@@ -218,7 +223,7 @@ router.post('/dataset/submit/:uid', async function(req, res, next) {
   let uid=req.params.uid
   let jsonTriples=JSON.parse(form_data.payload)
   let hashResult=hash(JSON.stringify(jsonTriples), {algorithm: "md5"})
-  if(hashResult===uid){
+  if(hashResult===uid.slice(8)){
     result=await datasetManagement.add("staging",uid,jsonTriples)
     let err=null
     if(result.err){
@@ -231,16 +236,5 @@ router.post('/dataset/submit/:uid', async function(req, res, next) {
 })
 
 
-/*
-function writeFile(file,data){
-  return new Promise((res,rej)=>{
-    fs.open(file,'w',(err,fd)=>{
-      if(err) res(err)
-
-    })
-
-  })
-}
-*/
 
 module.exports = router;
