@@ -26,6 +26,16 @@ block content
                             li.list-group-item
                                 strong.text-success Investigation Description&nbsp;
                                 | #{result[0].investigationDescription}
+                    .card
+                        .card-header.text-bg-success
+                            h5 Study
+                                span.badge.bg-secondary=result.length
+                        .card-body
+                            ul.list-group
+                                for study in Object.entries(result)
+                                    li.list-group-item
+                                        strong.text-success Study name&nbsp;
+                                        | #{study[1].studyName}
             else
                 svg(xmlns='http://www.w3.org/2000/svg' style='display: none;')
                     symbol#check-circle-fill(fill='currentColor' viewbox='0 0 16 16')
