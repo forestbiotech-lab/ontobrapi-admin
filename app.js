@@ -1,16 +1,17 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var brapiRouter = require('./routes/brapi');
-var formsRouter = require('./routes/forms');
-var queryRouter = require('./routes/query');
-var factoryRouter = require('./routes/factory');
+const indexRouter = require('./routes/index');
+const brapiRouter = require('./routes/brapi');
+const formsRouter = require('./routes/forms');
+const queryRouter = require('./routes/query');
+const factoryRouter = require('./routes/factory');
+const explorerRouter = require('./routes/explorer');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +29,7 @@ app.use('/admin/brapi', brapiRouter);
 app.use('/admin/forms', formsRouter);
 app.use('/admin/query', queryRouter);
 app.use('/admin/factory', factoryRouter);
+app.use('/', explorerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
