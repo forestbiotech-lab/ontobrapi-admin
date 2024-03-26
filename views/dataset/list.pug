@@ -5,14 +5,13 @@ block content
     .card
         .card-header
             h4 Staging
-            p #{JSON.stringify(result)}
+            //p #{JSON.stringify(result)}
         for dataset in Object.entries(result.staging)
             - let data = dataset[1]
             .card-body
                 strong Dataset&nbsp;
                 //| #{JSON.stringify(data)}
                 a(href=`/admin/brapi/dataset/status/${data.dsInvestigationDbId}`) #{data.dsInvestigationDbId}
-
                 br
                 if result.staging.length > 0
                     strong Status&nbsp;
