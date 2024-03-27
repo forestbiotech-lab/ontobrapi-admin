@@ -1,16 +1,17 @@
 const Query = require('./query')
 
 
-function init(repo){
+async function init(repo){
     let query=new Query()
+    let loading=query.loadInto("miappe:",`${repo}:`)
+    if(loading.err) return loading
     query.graph=`${repo}:`
     query.action="INSERT"
     query.triples=[
         "ontobrapi: rdf:type void:Dataset .",
         "ontobrapi: owl:imports miappe: ."
     ]
-    console.log(query.query)
-    return query.send()
+    return  query.send()
 }
 
 function add(repo,uid,triples){
