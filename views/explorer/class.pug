@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+    script(src="/admin/public/javascripts/explorer/init.js" async defer)
+    #app
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light
+            .container-fluid
+                a.navbar-brand(href='#') OntoExplorer
+                button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation')
+                    span.navbar-toggler-icon
+                #navbarNav.collapse.navbar-collapse
+                    ul.navbar-nav
+                        li.nav-item
+                            a.nav-link.active(aria-current='page' href='#') Investigations
+                        li.nav-item
+                            a.nav-link(href='#') Studies
+                        li.nav-item
+                            a.nav-link(href='#') Biological Material
+        .card
+            .card-body(style="height:200px; overflow-y:scroll;")
+                ul.list-group
+                    li.list-group-item(v-for=" upward in classes.upward " @click="goto(upward.upwardSubject)")
+                        //strong.text-success ObjectProperty&nbsp;
+                        | {{upward.upwardPredicate.split("#")[1]}}&nbsp;
+                        strong.text-success Class&nbsp;
+                        | {{upward.upwardSubject.split("#")[1]}}
+            .card-header.text-bg-success
+                h5 {{ term }}
+                strong DatasetId:&nbsp;
+                | {{ datasetId }}
+                ul.list-group
+                    li.list-group-item.text-bg-secondary(v-for=" dProperty in classes.dataProperties ")
+                        | {{dProperty.dataProperty.split("#")[1]}}&nbsp;
+                        strong.text-primary Data property&nbsp;
+                        | {{dProperty.dataValue}}
+            .card-body(style="height:200px; overflow-y:scroll;")
+                ul.list-group
+                    li.list-group-item(v-for=" line in classes.downward " @click="goto(line.downwardObservation)")
+                        | {{line.downwardPredicate.split("#")[1]}}
+                        strong.text-success Class&nbsp;
+                        | {{line.downwardObservation.split("#")[1]}}
+
+

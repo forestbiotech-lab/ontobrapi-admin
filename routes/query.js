@@ -8,6 +8,7 @@ const listClasses = require('../components/sparql/baseOntologyListClasses')
 const freeQuery = require('./../components/sparql/freeQuery')
 const restructuring = require("../components/helpers/restructuring");
 const cache = require('../components/db/cache');
+const Query = require("../components/sparql/query");
 // query/
 
 const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
@@ -130,5 +131,59 @@ router.get("/cache/clear",async (req,res)=>{
     res.json({clear})
 })
 
+
+router.post("/explorer/classes/downward",async (req,res)=>{
+    let {graph,term} = req.body
+    let query=new Query()
+
+    query.graph = graph
+    query.selectors = ["*"]
+    query.action = "SELECT"
+    query.triples = [
+        `<http://brapi.biodata.pt/${graph.slice(0,-1)}/${term}> ?downwardPredicate ?downwardObservation .`,
+        '?downwardObservation rdf:type ?miappeClass .',
+        '?miappeClass rdf:type owl:Class .'
+
+    ]
+    query.build()
+    let downwardClass = await query.send()
+    if (downwardClass.err) return res.json(downwardClass)
+    res.json(downwardClass)
+})
+
+router.post("/explorer/classes/upward",async (req,res)=>{
+    let {graph,term} = req.body
+    let query=new Query()
+
+    query.graph = graph
+    query.selectors = ["*"]
+    query.action = "SELECT"
+    query.triples = [
+        `?upwardSubject ?upwardPredicate <http://brapi.biodata.pt/${graph.slice(0,-1)}/${term}>.`,
+        '?upwardSubject rdf:type ?miappeClass .',
+        '?miappeClass rdf:type owl:Class .'
+    ]
+    query.build()
+    let upwardClass = await query.send()
+    if (upwardClass.err) return res.json(upwardClass)
+    res.json(upwardClass)
+})
+
+router.post("/explorer/dataproperties",async (req,res)=>{
+    let {graph,term} = req.body
+    let query=new Query()
+    query.graph = graph
+    query.selectors = ["*"]
+    query.action = "SELECT"
+    query.triples = [
+        `<http://brapi.biodata.pt/${graph.slice(0,-1)}/${term}> ?dataProperty ?dataValue .`,
+        '?dataProperty rdf:type owl:DatatypeProperty .'
+    ]
+    query.build()
+    let dataProperties = await query.send()
+    if (dataProperties.err) return res.json(dataProperties)
+    res.json(dataProperties)
+
+})
 
 module.exports = router;

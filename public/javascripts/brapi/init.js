@@ -10,7 +10,6 @@ if(paths[1]=="brapi" && paths.length==2){
     scriptName=[
         "main"
     ]
-
 }
 
 

@@ -13,6 +13,7 @@ class Query{
         this._triples=[]
         if(uid){
             this._newDataset=[
+                //dataset or datasetInvestigation??
                 "dataset: void:inDataset ontobrapi: .",
                 "dataset: miappe:hasInvestigation dataset:Investigation?? .",
                 "dataset:Investigation?? rdf:type miappe:investigation .",
@@ -35,6 +36,15 @@ class Query{
     set prefixes(input){
         this._prefixes=input
     }
+    loadInto(load,graph){
+        this.graph=graph
+        //override default
+        this._action=`LOAD ${load} INTO GRAPH ${graph} ;`
+        //override default
+        this._query=Object.entries(this._prefixes).reduce((acc,[key,currValue])=>{return acc+`${currValue.prefix}\n`},"")+"\n\n"
+        this._query+=this.action
+        return this.send()
+    }
     set action(input){
         if(this.graph===undefined){
             let graphErro=new Error("graphUndefined")
@@ -45,8 +55,9 @@ class Query{
         if (input=="INSERT"){
             this._action=`INSERT INTO GRAPH ${this.graph} `
             this._triples = this._triples.concat(this._newDataset)
-        }else if(input=="DELETE"){
-            this._action=`DELETE FROM ${this.graph} `
+        }else if(input=="DELETE") {
+            this._action = `DELETE
+                            FROM ${this.graph} `
         }else if(input=="SELECT") {
             if(this._selectors.length>0){
                 this._action="SELECT DISTINCT "+this._selectors.reduce((acc,curr)=>{return acc+`\t${curr}`},"")+` FROM ${this.graph} WHERE`
@@ -56,7 +67,15 @@ class Query{
         }
     }
     set selectors(input){
-        this._selectors=input
+        if(input instanceof Array){
+            this._selectors=input
+        }else{
+            let notArrayError=new Error("notArray")
+            notArrayError.code=500
+            notArrayError.message="Input must be an array"
+            throw notArrayError
+        }
+
     }
     get action(){
         return this._action

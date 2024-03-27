@@ -24,12 +24,13 @@ app.use(cookieParser());
 app.use('/admin/public',express.static(path.join(__dirname, 'public')));
 
 
+app.use('/', explorerRouter);
 app.use('/admin', indexRouter);
 app.use('/admin/brapi', brapiRouter);
 app.use('/admin/forms', formsRouter);
 app.use('/admin/query', queryRouter);
 app.use('/admin/factory', factoryRouter);
-app.use('/', explorerRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
