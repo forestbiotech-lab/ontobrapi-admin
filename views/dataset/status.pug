@@ -17,7 +17,8 @@ block content
                 | #{result[0].investigationStatus}
                 .card
                     .card-header.text-bg-success
-                        h5 Investigation (#{dsInvestigation})
+                        h5 Investigation
+                            a.btn.btn-success(href=result[0].dsInvestigation.replace(/brapi.biodata.pt/,"localhost:3001")) (#{result[0].dsInvestigation.replace(/brapi.biodata.pt/,"localhost:3001")} )
                     .card-body
                         ul.list-group
                             li.list-group-item
