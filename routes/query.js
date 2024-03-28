@@ -9,6 +9,8 @@ const freeQuery = require('./../components/sparql/freeQuery')
 const restructuring = require("../components/helpers/restructuring");
 const cache = require('../components/db/cache');
 const Query = require("../components/sparql/query");
+
+
 // query/
 
 const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"

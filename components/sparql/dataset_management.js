@@ -56,7 +56,7 @@ function get(repo,uid){
 
 function list(repo){
     let query=new Query()
-    query.selectors=["?dataset","?dsInvestigationDbId", "?investigationId", "?investigationName", "?investigationStatus", "?investigationDescription"]
+    query.selectors=["?dataset","?dsInvestigation","?dsInvestigationDbId", "?investigationId", "?investigationName", "?investigationStatus", "?investigationDescription"]
     query.graph=`${repo}:`
     query.action="SELECT"
     query.triples=[

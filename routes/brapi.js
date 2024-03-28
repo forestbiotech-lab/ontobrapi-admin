@@ -11,6 +11,11 @@ const inferredRelationships = require('../components/sparql/baseOntologyInferred
 
 const sanitizeParams  = require('./../components/helpers/sanitizeParams')
 const fs = require('fs')
+const config=require("../.config")
+const access_point={
+    external:config.access_point.external,
+    ontobrapi:config.sparql.ontoBrAPI
+}
 
 const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
 
@@ -214,7 +219,7 @@ router.get('/dataset/status/:uid', async function(req, res, next) {
 
 router.get('/dataset/list', async function(req, res, next) {
   result=await datasetManagement.list("staging")
-  res.render("dataset/list",{result: {staging:result.data,production:[]}})
+  res.render("dataset/list",{result: {staging:result.data,production:[]},access_point})
 })
 
 router.post('/dataset/submit/:uid', async function(req, res, next) {

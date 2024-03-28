@@ -1,10 +1,14 @@
 {
+  "access_point": {
+    "external": "http://localhost:3001"
+  },
   "sparql": {
     "user": "dba",
     "pass": "dba",
     "host": "localhost",
     "port": "8890",
-    "ontoBrAPIgraph": "http://localhost:8890/TraceRice"
+    "ontoBrAPIgraph": "http://localhost:8890/TraceRice",
+    "ontoBrAPI": "http://brapi.biodata.pt"
   },
   "mongo": {
     "host": "localhost",

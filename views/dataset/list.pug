@@ -18,7 +18,8 @@ block content
                     | #{data.investigationStatus}
                     .card
                         .card-header.text-bg-success
-                            h5 Investigation
+                            h5 Investigation&nbsp;
+                                a.btn.btn-light(href=data.dsInvestigation.replace(access_point.ontobrapi,access_point.external)) ontoExplorer
                         .card-body
                             ul.list-group
                                 li.list-group-item
@@ -53,6 +54,7 @@ block content
                 .card
                     .card-header.text-bg-success
                         h5 Investigation
+                            a.btn.btn-light(href=dsInvestigation.replace(access_point.ontobrapi,access_point.external)) ontoExplorer
                     .card-body
                         ul.list-group
                             li.list-group-item
