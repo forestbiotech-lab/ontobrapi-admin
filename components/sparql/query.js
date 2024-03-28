@@ -184,6 +184,7 @@ class Query{
                         delta=delta-10
                         upperBound-=10
                     }else{
+                        console.log(result.err)
                         return result
                     }
                     console.log("Error size: ",new Blob([result.err.message]).size)
