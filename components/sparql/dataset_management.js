@@ -39,7 +39,7 @@ function get(repo,uid){
     query.action="SELECT"
     query.triples=[
         "?datasets void:inDataset ontobrapi: .",
-        "?dataset miappe:hasInvestigation ?dsInvestigation .",
+        "?datasets miappe:hasInvestigation ?dsInvestigation .",
         "?dsInvestigation rdf:type miappe:investigation .",   //For some reason this does not work, might be the constraint on one ID
         `?dsInvestigation miappe:hasDatabaseId "${uid}"^^xsd:string .`,
         "?dsInvestigation miappe:hasIdentifier ?investigationId .",
