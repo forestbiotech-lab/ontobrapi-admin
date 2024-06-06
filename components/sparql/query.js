@@ -10,6 +10,7 @@ class Query{
         const endpointUrl = `http://${host}:${port}/sparql`
         this.client = new SparqlClient({ endpointUrl })
         this.prefixes=prefixes
+        this._suffix=""
         this._triples=[]
         if(uid){
             this._newDataset=[
@@ -92,6 +93,13 @@ class Query{
 
         return `<${this._prefixes[prefix].url}${instance}>`
     }
+    set suffix(input){
+        this._suffix=input
+    }
+    get suffix(){
+        return this._suffix
+    }
+
     set triples(input){
         if(input instanceof Array){
             this._triples=input
@@ -138,6 +146,7 @@ class Query{
         this._query+=Object.entries(this._prefixes).reduce((acc,[key,currValue])=>{return acc+`${currValue.prefix}\n`},"")+"\n\n"
         this._query+=this.action
         this._query+=this.triples.reduce((acc,curr)=>{return acc+`\t${curr}\n`},"{\n")+"\n}"
+        this._query+=this.suffix
     }
     set query(input){
         this._query=input
