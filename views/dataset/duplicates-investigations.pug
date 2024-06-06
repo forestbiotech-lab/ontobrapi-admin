@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    H2 Duplicates
+    for investigation in result
+        .card
+            .card-header
+                strong.text-success ID:&nbsp;
+                .btn.disabled.position-relative.bg-secondary-subtle
+                    h5 !{investigation.investigationId}&nbsp;
+                    span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger=investigation.count
+            if investigation.count>1
+                .card-body
+                    form(method="post" action="/admin/brapi/dataset/list/duplicates/"+graph)
+                        .d-grid
+                            input(type="hidden",name="id",value=investigation.investigationId)
+                            input.btn.btn-primary(type="submit" value="Show investigations")

@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    H2 Duplicates
+    .card
+        .card-header
+            strong.text-success ID:&nbsp;
+            .btn.disabled.position-relative.bg-secondary-subtle
+                h5 !{id}&nbsp;
+        for investigation in result
+            .card-body
+                    .d-flex.flex-row
+                        strong.text-success Name:
+                        p=investigation.investigationName
+                    .d-flex.flex-row
+                        strong.text-success DbId:
+                        p=investigation.investigationDbId
+                    .d-grid
+                        button.btn.btn-danger Delete

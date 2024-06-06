@@ -3,9 +3,9 @@ extends ../layout
 block content
     h1 List datasets
     .card
-        .card-header
-            h4 Staging
-            //p #{JSON.stringify(result)}
+        .card-header.d-flex.d-flex-row
+            h4 Staging&nbsp;
+                a.btn.btn-success(href="/admin/brapi/dataset/list/duplicates/staging") View duplicates
         for dataset in Object.entries(result.staging)
             - let data = dataset[1]
             .card-body
@@ -46,7 +46,8 @@ block content
                             | Unable to locate your dataset.
     .card
         .card-header
-            h4 Production
+            h4 Production&nbsp;
+                a.btn.btn-success(href="/admin/brapi/dataset/list/duplicates/staging") View duplicates
         .card-body
             strong Dataset&nbsp;
             | #{uid}
