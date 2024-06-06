@@ -19,7 +19,7 @@ block content
         .card
             .card-body(style="height:200px; overflow-y:scroll;")
                 ul.list-group
-                    li.list-group-item(v-for=" upward in classes.upward " @click="goto(upward.upwardSubject)")
+                    li.list-group-item.list-group-item-action(v-for=" upward in classes.upward " @click="goto(upward.upwardSubject)")
                         //strong.text-success ObjectProperty&nbsp;
                         | {{upward.upwardPredicate.split("#")[1]}}&nbsp;
                         strong.text-success Class&nbsp;
@@ -35,7 +35,7 @@ block content
                         | {{dProperty.dataValue}}
             .card-body(style="height:200px; overflow-y:scroll;")
                 ul.list-group
-                    li.list-group-item(v-for=" line in classes.downward " @click="goto(line.downwardObservation)")
+                    li.list-group-item.list-group-item-action(v-for=" line in classes.downward " @click="goto(line.downwardObservation)")
                         | {{line.downwardPredicate.split("#")[1]}}
                         strong.text-success Class&nbsp;
                         | {{line.downwardObservation.split("#")[1]}}
