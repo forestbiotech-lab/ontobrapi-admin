@@ -7,7 +7,7 @@ const datasetManagement = require('../components/sparql/dataset_management')
 const brapiAttributesQuery = require('.././components/sparql/brapiAttributesQuery')
 const classProperties = require('../components/sparql/baseOntologyClassProperties')
 const inferredRelationships = require('../components/sparql/baseOntologyInferredRelationships')
-
+const Query = require('../components/sparql/query')
 
 const sanitizeParams  = require('./../components/helpers/sanitizeParams')
 const fs = require('fs')
@@ -220,6 +220,44 @@ router.get('/dataset/status/:uid', async function(req, res, next) {
 router.get('/dataset/list', async function(req, res, next) {
   result=await datasetManagement.list("staging")
   res.render("dataset/list",{result: {staging:result.data,production:[]},access_point})
+})
+
+router.get("/dataset/list/duplicates/:graph",async function(req,res){
+  let graph=req.params.graph
+  let query=new Query()
+  query.graph=`${graph}:`
+  query.selectors = ["?investigationId (COUNT(?investigationId) AS ?count)"]
+  query.action = "SELECT"
+  query.triples=[
+      "?dataset miappe:hasInvestigation ?dsInvestigation .",
+      "?dsInvestigation rdf:type miappe:investigation .",
+      "?dsInvestigation miappe:hasIdentifier ?investigationId .",
+      "?dsInvestigation miappe:hasName ?investigationName ."
+  ]
+  query.suffix="GROUP BY ?investigationId"
+  query.build()
+  result=await query.send()
+  res.render("dataset/duplicates-investigations", {result:result.data,graph})
+})
+
+router.post('/dataset/list/duplicates/:graph', async function(req, res, next) {
+  let graph=req.params.graph
+  let id=req.body.id
+  let query = new Query()
+  query.graph=`${graph}:`
+  query.selectors = ["?investigationName","?investigationDbId"]
+  query.action = "SELECT"
+  query.triples=[
+    "?dataset miappe:hasInvestigation ?dsInvestigation .",
+    "?dsInvestigation rdf:type miappe:investigation .",
+    `?dsInvestigation miappe:hasIdentifier "${id}"^^xsd:string .`,
+    "?dsInvestigation miappe:hasName ?investigationName .",
+    "?dsInvestigation miappe:hasDatabaseId ?investigationDbId ."
+
+  ]
+  query.build()
+  result=await query.send()
+  res.render("dataset/duplicates-investigations-manage", {result:result.data,graph,id})
 })
 
 router.post('/dataset/submit/:uid', async function(req, res, next) {
