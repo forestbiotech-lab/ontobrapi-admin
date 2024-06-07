@@ -60,7 +60,6 @@ router.get('/inferred/dataProperty/:class',(req,res)=>{
         let message=err.msg
         res.json({err,message,stack})
     })
-
 })
 
 router.get('/inferred/dataPropertyRange/:dataProperty',(req,res)=>{
@@ -186,6 +185,32 @@ router.post("/explorer/dataproperties",async (req,res)=>{
     if (dataProperties.err) return res.json(dataProperties)
     res.json(dataProperties)
 
+})
+
+
+//TODO sanitize term
+router.post("/lookup/data-property",async (req,res)=>{
+    let {graph,term} = req.body
+    let query=new Query()
+    query.graph = graph
+    query.selectors = ["*"]
+    query.action = "SELECT"
+    query.triples = [
+        '?class     rdf:type  owl:Class .',
+        '?dataPropertyURI rdf:type ?class .',
+        `?dataPropertyURI ?property ?dataValue .`,
+        '?property rdf:type owl:DatatypeProperty .',
+        `FILTER (REGEX(?dataValue, "${term}", 'i'))`
+    ]
+    query.build()
+    let properties = await query.send()
+    if (properties.err) return res.json(properties)
+    if(req.hostname == "localhost" && req.port == "3010"){   //no-cors option for development
+        res.set('Access-Control-Allow-Origin', 'http://localhost:3010');
+        res.set('Access-Control-Allow-Method', 'POST,GET;OPTIONS');
+        res.set('Access-Control-Allow-Headers');
+    }
+    res.json(properties)
 })
 
 
