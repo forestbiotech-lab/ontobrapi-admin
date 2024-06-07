@@ -11,7 +11,7 @@ block content
                 #navbarNav.collapse.navbar-collapse
                     ul.navbar-nav
                         li.nav-item
-                            a.nav-link.active(aria-current='page' href='#') Investigations
+                            button.nav-link.active(aria-current='page' @click="goto(investigation)") Investigation
                         li.nav-item
                             a.nav-link(href='#') Studies
                         li.nav-item

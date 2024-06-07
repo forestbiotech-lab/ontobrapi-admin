@@ -1,3 +1,9 @@
+if(typeof window.Vue == "undefined"){
+    setTimeout(()=>{
+        window.location.reload()
+    },1000)
+}
+
 window.app=new Vue({
     el:"#app",
     data:{
@@ -13,7 +19,8 @@ window.app=new Vue({
             downward:[],
             upward:[],
             dataProperties:[]
-        }
+        },
+        investigation:""
     },
     methods:{
         goto(forward_location){
@@ -42,5 +49,19 @@ window.app=new Vue({
         let dataProperties=await $.post(`/admin/query/explorer/dataproperties`,payload)
         if(dataProperties.err) this.$set(this.classes, "dataProperties", dataProperties.data)
         this.$set(this.classes, "dataProperties", dataProperties.data)
+        let response=await fetch("/admin/query/explorer/investigation",{
+            method:"POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                graph:this.graph+':',
+                id:this.datasetId
+            })
+        })
+        let result=await response.json()
+        if(result.err) this.$set(this, "investigation", "")
+        this.$set(this, "investigation", result.data[0].dataPropertyURI.replace(/^https*:\/\/[a-z.]*\//,"/"))
     }
 })

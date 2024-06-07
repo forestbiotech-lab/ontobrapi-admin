@@ -187,6 +187,25 @@ router.post("/explorer/dataproperties",async (req,res)=>{
 
 })
 
+router.post("/explorer/investigation",async (req,res)=>{
+    let {graph,id} = req.body
+    let query=new Query()
+    query.graph = graph
+    query.selectors = ["*"]
+    query.action = "SELECT"
+    query.triples = [
+        'miappe:investigation    rdf:type           owl:Class .',
+        '?dataPropertyURI        rdf:type           miappe:investigation .',
+        `?dataPropertyURI   miappe:hasDatabaseId    "${id}"^^xsd:string .`
+    ]
+    query.build()
+    let properties = await query.send()
+    if (properties.err) return res.json(properties)
+    res.json(properties)
+})
+
+
+
 
 //TODO sanitize term
 router.post("/lookup/data-property",async (req,res)=>{
@@ -197,10 +216,15 @@ router.post("/lookup/data-property",async (req,res)=>{
     query.action = "SELECT"
     query.triples = [
         '?class     rdf:type  owl:Class .',
+        'FILTER(',
+        '        ?class = miappe:investigation',
+        'OR',
+        '    ?class = miappe:study',
+        ')',
         '?dataPropertyURI rdf:type ?class .',
         `?dataPropertyURI ?property ?dataValue .`,
         '?property rdf:type owl:DatatypeProperty .',
-        `FILTER (REGEX(?dataValue, "${term}", 'i'))`
+        `FILTER (REGEX(?dataValue, "${term}", 'i')) LIMIT 100`
     ]
     query.build()
     let properties = await query.send()
@@ -212,6 +236,8 @@ router.post("/lookup/data-property",async (req,res)=>{
     }
     res.json(properties)
 })
+
+
 
 
 

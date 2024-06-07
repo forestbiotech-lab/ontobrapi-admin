@@ -212,9 +212,11 @@ router.get('/dataset/init', async function(req, res, next) {
 })
 
 router.get('/dataset/status/:uid', async function(req, res, next) {
-    let uid=req.params.uid
-    let result=await datasetManagement.get("staging",uid)
-    res.render("dataset/status", {result:result.data,uid})
+  let uid=req.params.uid
+  let result=await datasetManagement.get("staging",uid)
+  let payload={result:result.data,uid}
+  payload["ontobrapi"]=config.sparql.ontoBrAPI
+  res.render("dataset/status", payload)
 })
 
 router.get('/dataset/list', async function(req, res, next) {

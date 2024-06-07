@@ -18,7 +18,8 @@ block content
                 .card
                     .card-header.text-bg-success
                         h5 Investigation
-                            a.btn.btn-success(href=result[0].dsInvestigation.replace(/brapi.biodata.pt/,"localhost:3001")) ontoExplorer (#{result[0].dsInvestigation.replace(/brapi.biodata.pt/,"localhost:3001")} )
+                            p=ontobrapi
+                            a.btn.btn-success(href=result[0].dsInvestigation.replace(ontobrapi,"")) ontoExplorer (#{result[0].dsInvestigation} )
                     .card-body
                         ul.list-group
                             li.list-group-item
