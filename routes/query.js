@@ -205,7 +205,7 @@ router.post("/lookup/data-property",async (req,res)=>{
     query.build()
     let properties = await query.send()
     if (properties.err) return res.json(properties)
-    if(req.hostname == "localhost" && req.port == "3010"){   //no-cors option for development
+    if(req.hostname == "localhost" ){   //no-cors option for development
         res.set('Access-Control-Allow-Origin', 'http://localhost:3010');
         res.set('Access-Control-Allow-Method', 'POST,GET;OPTIONS');
         res.set('Access-Control-Allow-Headers');
