@@ -13,8 +13,8 @@ const sanitizeParams  = require('./../components/helpers/sanitizeParams')
 const fs = require('fs')
 const config=require("../.config")
 const access_point={
-    external:config.access_point.external,
-    ontobrapi:config.sparql.ontoBrAPI
+  external: process.env.GIT_COMMIT != undefined ? "" : config.access_point.external,
+  ontobrapi: config.sparql.ontoBrAPI
 }
 
 const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
