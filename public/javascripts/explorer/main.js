@@ -1,7 +1,7 @@
 if(typeof window.Vue == "undefined"){
     setTimeout(()=>{
         window.location.reload()
-    },1000)
+    },2000)
 }
 
 window.app=new Vue({
