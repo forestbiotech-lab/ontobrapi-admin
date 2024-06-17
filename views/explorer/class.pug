@@ -11,10 +11,10 @@ block content
                 #navbarNav.collapse.navbar-collapse
                     ul.navbar-nav
                         li.nav-item
-                            button.nav-link.active(aria-current='page' @click="goto(investigation)") Investigation
-                        li.nav-item
+                            button.nav-link.active(aria-current='page' @click="goto(investigation)" v-if="investigation.length>0") Investigation
+                        //li.nav-item
                             a.nav-link(href='#') Studies
-                        li.nav-item
+                        //li.nav-item
                             a.nav-link(href='#') Biological Material
         .card
             .card-body(style="height:200px; overflow-y:scroll;")
