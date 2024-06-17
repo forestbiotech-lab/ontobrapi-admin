@@ -3,7 +3,7 @@ import '../scss/styles.scss'
 
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap'
-import Vue from 'vue/vue.esm.browser';
+import Vue from 'vue/vue.esm.browser.min';
 import vSelect from "vue-select";
 
 
