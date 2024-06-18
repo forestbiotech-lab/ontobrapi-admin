@@ -1,7 +1,7 @@
 {
   "staging":{
     "prefix": "PREFIX staging: <http://brapi.biodata.pt/staging#>",
-    "url": "http://brapi.biodata.pt/ontobrapi"
+    "url": "http://brapi.biodata.pt/staging"
   },
   "production":{
     "prefix": "PREFIX production: <http://brapi.biodata.pt/ontobrapi#>",

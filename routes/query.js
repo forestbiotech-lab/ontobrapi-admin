@@ -9,7 +9,7 @@ const freeQuery = require('./../components/sparql/freeQuery')
 const restructuring = require("../components/helpers/restructuring");
 const cache = require('../components/db/cache');
 const Query = require("../components/sparql/query");
-
+const prefixes = require('../components/sparql/assets/prefixes');
 
 // query/
 
@@ -141,7 +141,7 @@ router.post("/explorer/classes/downward",async (req,res)=>{
     query.selectors = ["*"]
     query.action = "SELECT"
     query.triples = [
-        `<http://brapi.biodata.pt/${graph.slice(0,-1)}/${term}> ?downwardPredicate ?downwardObservation .`,
+        `<${prefixes[graph.slice(0,-1)].url}/${term}> ?downwardPredicate ?downwardObservation .`,
         '?downwardObservation rdf:type ?miappeClass .',
         '?miappeClass rdf:type owl:Class .'
 
@@ -160,7 +160,7 @@ router.post("/explorer/classes/upward",async (req,res)=>{
     query.selectors = ["*"]
     query.action = "SELECT"
     query.triples = [
-        `?upwardSubject ?upwardPredicate <http://brapi.biodata.pt/${graph.slice(0,-1)}/${term}>.`,
+        `?upwardSubject ?upwardPredicate <${prefixes[graph.slice(0,-1)].url}/${term}>.`,
         '?upwardSubject rdf:type ?miappeClass .',
         '?miappeClass rdf:type owl:Class .'
     ]

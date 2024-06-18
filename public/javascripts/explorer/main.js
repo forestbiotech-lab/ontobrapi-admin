@@ -70,7 +70,7 @@ function loadVue() {
             })
             let result = await response.json()
             if (result.err) this.$set(this, "investigation", "")
-            if(result.data[0].length>0) {
+            if(result.data.length>0) {
                 if (Object.keys(result.data[0]).length > 0) {
                     this.$set(this, "investigation", result.data[0].dataPropertyURI.replace(/^https*:\/\/[a-z.]*\//, "/"))
                 }
