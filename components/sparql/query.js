@@ -218,7 +218,9 @@ class Query{
                     result.push(resultTriple)
                 })
                 stream.on('error', err => {
-                    res({data: null, err})
+                    let message = err.message
+                    let stack = err.stack
+                    res({data: null, err:{message,stack}})
                 })
                 stream.on('end', err => {
                     res({data: result,err})  //TODO Check this err that might not be err

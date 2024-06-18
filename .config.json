@@ -7,9 +7,8 @@
     "pass": "dba",
     "host": "localhost",
     "port": "8890",
-    "ontoBrAPIgraph": "http://localhost:8890/TraceRice",
-    "ontoBrAPI": "http://brapi.biodata.pt",
-    "baseOntologyURI": "http://purl.org/ppeo/PPEO.owl#"
+    "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#",
+    "ontoBrAPI": "http://brapi.biodata.pt"
   },
   "mongo": {
     "host": "localhost",
@@ -19,5 +18,3 @@
     "password": "password"
   }
 }
-
-

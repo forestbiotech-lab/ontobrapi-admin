@@ -4,16 +4,15 @@ block content
   script(src="/admin/public/javascripts/js-loader.js" async defer)
   h1= title
   p Welcome to #{title}
-  button.btn.btn-danger Hello
   a.btn.btn-danger(href="/admin/brapi/listmodules") List Modules
   a.btn.btn-secondary(href="/admin/brapi/dataset/list") Staging list datasets
   #app
-    .d-flex.flex-row
-      label.p-3.pe-1.badge.bg-secondary(for="active-graph") Active graph:
-      .badge.bg-primary#active-graph.p-3.ps-1 {{ graph }}
     .card
       .card-header
-        h5 Available Graphs
+        .d-flex
+          h5.me-auto.pt-2 Available Graphs
+          label.p-3.pe-1.badge.bg-secondary(for="active-graph") Active graph:
+            .badge.bg-primary#active-graph.ps-1 {{ graph }}
       .card-body
         v-select.p-2(:options="availableGraphs",v-model="graph" @input="saveGraph")
         table
