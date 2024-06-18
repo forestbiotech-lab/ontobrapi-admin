@@ -14,6 +14,4 @@ EXPOSE $PORT
 
 CMD [ "sh", "-c", "GIT_COMMIT=$(cut -f1 .FETCH_HEAD) npm start" ]
 
-RUN npm run init-dataset
-
 LABEL version="1.0"
