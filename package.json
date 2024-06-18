@@ -8,7 +8,8 @@
     "build": "webpack",
     "test": "mocha",
     "puppeteer": "mocha test/puppeteer_validate_brapi_mapping.test.js",
-    "update-calls": "node components/services/updateCalls.js"
+    "update-calls": "node components/services/updateCalls.js",
+    "init-dataset": "node components/services/initDataset.js"
   },
   "dependencies": {
     "@netbofia/buildingblocks": "^1.0.2",

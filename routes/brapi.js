@@ -16,36 +16,14 @@ const access_point={
   external: process.env.GIT_COMMIT != undefined ? "" : config.access_point.external,
   ontobrapi: config.sparql.ontoBrAPI
 }
-
-const baseOntologyURI="http://purl.org/ppeo/PPEO.owl#"
+let defaultCall= require('./../components/sparql/assets/defaultCall.json')
+const baseOntologyURI=config.sparql.baseOntologyURI
 
 
 //TODO implement MongoDB on docker-compose
 //const db = require('./../components/db')
 
-let defaultCall={
-  "@context": [
-    "https://brapi.org/jsonld/context/metadata.jsonld"
-  ],
-  "metadata": {
-    "datafiles": [],
-    "pagination": {
-      "currentPage": 0,
-      "pageSize": 1,
-      "totalCount": 1,
-      "totalPages": 1
-    },
-    "status": [
-      {
-        "message": "Request accepted, response successful",
-        "messageType": "INFO"
-      }
-    ]
-  },
-  "result": {
-    "data": []
-  }
-}
+
 
 
 router.get('/',async function(req,res,next){
@@ -206,9 +184,16 @@ router.post('/listcalls/:moduleName/:callName/update', async function(req, res, 
   })
 });
 
+
+//TODO init both datasets
 router.get('/dataset/init', async function(req, res, next) {
-  let result=await datasetManagement.init("staging")
-  res.json(result)
+  let result=[]
+  result[0]=await datasetManagement.init("staging")
+  result[1]=await datasetManagement.init("production")
+  if (result[0].err || result[1].err) {
+    res.json({status:"error",result})
+  }
+  res.json({status:"ok",result})
 })
 
 router.get('/dataset/status/:uid', async function(req, res, next) {

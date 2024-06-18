@@ -10,8 +10,10 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE $PORT
 
 CMD [ "sh", "-c", "GIT_COMMIT=$(cut -f1 .FETCH_HEAD) npm start" ]
+
+RUN npm run init-dataset
 
 LABEL version="1.0"
