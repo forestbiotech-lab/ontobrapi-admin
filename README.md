@@ -96,4 +96,54 @@ Select the appropriate database: `use <<db>>`:
 Pagination
 https://www.mongodb.com/docs/atlas/atlas-search/tutorial/pagination-tutorial/
 
-- Aggredation: Use `db.<<collection>>.aggregation([{"$match":{}},{"$skip":0},{"$limit":1000}])` $skip 
+- Aggredation: Use `db.<<collection>>.aggregation([{"$match":{}},{"$skip":0},{"$limit":1000}])` $skip
+
+
+
+# Dataset management
+
+There are two graphs where the dataset are stored. Staging \<http://brapi.biodata.pt/staging\> and Production \<http://brapi.biodata.pt/ontobrapi\>. Globally the prefixes used are listed below:
+``` sparql
+PREFIX staging:    <http://brapi.biodata.pt/staging#>
+PREFIX production: <http://brapi.biodata.pt/ontobrapi#>
+PREFIX ontobrapi:  <http://brapi.biodata.pt/ontobrapi#>
+PREFIX miappe:     <http://purl.org/ppeo/PPEO.owl#>
+PREFIX rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:        <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:        <http://www.w3.org/2002/07/owl#>
+PREFIX void:       <http://rdfs.org/ns/void#>
+PREFIX rdfs:       <http://www.w3.org/2000/01/rdf-schema#>
+````
+## Initialization 
+Graphs stored in either graphs should have the apropriate URI in acordance with the respective graph. On start both graphs are initialized with: 
+
+``` sparql
+   staging: rdf:type void:Dataset .
+   staging: owl:imports miappe .
+```
+
+and 
+
+``` sparql
+   production: rdf:type void:Dataset .
+   production: owl:imports miappe .
+```
+
+## New dataset 
+The new dataset is allways added to the staging graph with the staging URI. An UID is gererated to the dataset on upload and tha triples are added acordingly after the following triples where dataset: is \<${ontobrapi}/${graph}/${uid}#\>:
+``` sparql
+        dataset: void:inDataset ontobrapi: .
+        dataset: miappe:hasInvestigation dataset:Investigation?? .
+        dataset:Investigation?? rdf:type miappe:investigation .
+        dataset:Investigation?? miappe:hasDatabaseId "${uid}"^^xsd:string .
+        dataset:hasStatus rdf:type owl:ObjectProperty .
+        dataset:hasStatus rdfs:domain dataset:Investigation?? .
+        dataset:hasStatus rdfs:range rdfs:Literal .
+        dataset:hasStatus rdfs:label "hasStatus" .
+        dataset:hasStatus rdfs:subPropertyOf void:hasProperty .
+        dataset:hasStatus rdf:type owl:ObjectProperty .
+        dataset: miappe:hasStatus "Awaiting validation"^^xsd:string .
+```
+
+It is important that the datasets get initialized, which should run successfully on each `npm start` or alternatively using the `npm run init-dataset` command, otherwise, the ontobrapi explorer will not work. 
+
