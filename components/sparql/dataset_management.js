@@ -1,5 +1,5 @@
 const Query = require('./query')
-
+const ontobrapi = require('../../.config').sparql.ontoBrAPI
 
 async function init(repo){
     let query=new Query()
@@ -8,16 +8,19 @@ async function init(repo){
     query.graph=`${repo}:`
     query.action="INSERT"
     query.triples=[
-        "ontobrapi: rdf:type void:Dataset .",
-        "ontobrapi: owl:imports miappe: ."
+
+        `${repo}: rdf:type void:Dataset .`,
+        `${repo}: owl:imports miappe: .`
     ]
     return  query.send()
 }
 
+
+//TODO hardcoded url
 function add(repo,uid,triples){
     let dataset={
-        "prefix": `PREFIX dataset: <http://brapi.biodata.pt/${repo}/${uid}#>`,
-            "url": `http://brapi.biodata.pt/${repo}/${uid}#`
+        "prefix": `PREFIX dataset: <${ontobrapi}/${repo}/${uid}#>`,
+        "url": `${ontobrapi}/${repo}/${uid}#`
     }
     let query=new Query(uid)
     query.graph=`${repo}:`
