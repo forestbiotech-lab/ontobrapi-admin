@@ -143,7 +143,7 @@ router.post("/explorer/classes/downward",async (req,res)=>{
     query.triples = [
         `<${prefixes[graph.slice(0,-1)].url}/${term}> ?downwardPredicate ?downwardObservation .`,
         '?downwardObservation rdf:type ?miappeClass .',
-        '?miappeClass rdf:type owl:Class .'
+        //'?miappeClass rdf:type owl:Class .'
 
     ]
     query.build()
@@ -162,7 +162,7 @@ router.post("/explorer/classes/upward",async (req,res)=>{
     query.triples = [
         `?upwardSubject ?upwardPredicate <${prefixes[graph.slice(0,-1)].url}/${term}>.`,
         '?upwardSubject rdf:type ?miappeClass .',
-        '?miappeClass rdf:type owl:Class .'
+        //'?miappeClass rdf:type owl:Class .'
     ]
     query.build()
     let upwardClass = await query.send()
