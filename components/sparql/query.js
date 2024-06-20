@@ -208,7 +208,13 @@ class Query{
             return {data: queryResult,err:null}
         }
         return new Promise((res,rej)=> {
-            this.client.query.select(this.query).then(stream => {
+            if (this.action == "SELECT") {
+                this.client.query.select(this.query).then(stream => callBack(stream)).catch(err => errorCallback(err))
+            }else{
+                //TODO check other cases
+                this.client.query.select(this._query).then(stream => callBack(stream)).catch(err => errorCallback(err))
+            }
+            function callBack(stream) {
                 let result = []
                 stream.on('data', row => {
                     let resultTriple = {}
@@ -220,16 +226,17 @@ class Query{
                 stream.on('error', err => {
                     let message = err.message
                     let stack = err.stack
-                    res({data: null, err:{message,stack}})
+                    res({data: null, err: {message, stack}})
                 })
                 stream.on('end', err => {
-                    res({data: result,err})  //TODO Check this err that might not be err
+                    res({data: result, err})  //TODO Check this err that might not be err
                 })
-            }).catch(err => {
+            }
+            function errorCallback(err){
                 let message = err.message
                 let stack = err.stack
                 res({data:null, err:{message,stack}})
-            })
+            }
         })
     }
 }

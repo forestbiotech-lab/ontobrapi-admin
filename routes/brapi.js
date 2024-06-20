@@ -192,8 +192,9 @@ router.get('/dataset/init', async function(req, res, next) {
   result[1]=await datasetManagement.init("production")
   if (result[0].err || result[1].err) {
     res.json({status:"error",result})
+  }else{
+    res.json({status:"ok",result})
   }
-  res.json({status:"ok",result})
 })
 
 router.get('/dataset/status/:uid', async function(req, res, next) {

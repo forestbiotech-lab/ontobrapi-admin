@@ -3,16 +3,20 @@ const ontobrapi = require('../../.config').sparql.ontoBrAPI
 
 async function init(repo){
     let query=new Query()
-    let loading=query.loadInto("miappe:",`${repo}:`)
+    let loading=await query.loadInto("miappe:",`${repo}:`)
     if(loading.err) return loading
-    query.graph=`${repo}:`
-    query.action="INSERT"
+    else return loading
+    //query.graph=`${repo}:`
+
+    /*query.action="INSERT"
     query.triples=[
 
         `${repo}: rdf:type void:Dataset .`,
         `${repo}: owl:imports miappe: .`
-    ]
-    return  query.send()
+    ]*/
+
+    query.action="LOAD miappe:"
+    //return  query.send()
 }
 
 
