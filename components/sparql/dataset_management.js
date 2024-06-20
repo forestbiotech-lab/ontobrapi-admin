@@ -5,18 +5,24 @@ async function init(repo){
     let query=new Query()
     let loading=await query.loadInto("miappe:",`${repo}:`)
     if(loading.err) return loading
-    else return loading
-    //query.graph=`${repo}:`
 
-    /*query.action="INSERT"
+    //else return loading
+
+    query=new Query()
+    query.graph=`${repo}:`
+    query.action="INSERT"
     query.triples=[
-
         `${repo}: rdf:type void:Dataset .`,
         `${repo}: owl:imports miappe: .`
-    ]*/
+    ]
 
-    query.action="LOAD miappe:"
-    //return  query.send()
+    let importsMiappe=await query.send()
+    if(importsMiappe.err) return importsMiappe
+
+    else{
+        loading.data.push(importsMiappe.data[0])
+        return loading
+    }
 }
 
 
