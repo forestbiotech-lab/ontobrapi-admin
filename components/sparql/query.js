@@ -208,10 +208,11 @@ class Query{
             return {data: queryResult,err:null}
         }
         return new Promise((res,rej)=> {
-            if (this.action == "SELECT") {
+            if (this.action == "SELECT"){
+                this.client.query.select(this.query).then(stream => callBack(stream)).catch(err => errorCallback(err))
+            }else if(this.action.startsWith("INSERT")){
                 this.client.query.select(this.query).then(stream => callBack(stream)).catch(err => errorCallback(err))
             }else{
-                //TODO check other cases
                 this.client.query.select(this._query).then(stream => callBack(stream)).catch(err => errorCallback(err))
             }
             function callBack(stream) {
