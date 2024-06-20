@@ -224,7 +224,7 @@ router.post("/lookup/data-property",async (req,res)=>{
         '?dataPropertyURI rdf:type ?class .',
         `?dataPropertyURI ?property ?dataValue .`,
         '?property rdf:type owl:DatatypeProperty .',
-        `FILTER (REGEX(?dataValue, "${term}", 'i')) LIMIT 100`
+        `FILTER (REGEX(?dataValue, "${term}", 'i'))`
     ]
     query.build()
     let properties = await query.send()
