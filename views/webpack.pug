@@ -12,5 +12,7 @@ html
     body
         .row
             .col-5(style="height:100px;")
-                img(src="/admin/public/images/logo.png" height="100px")
+                a(href="/admin")
+                    img(src="/admin/public/images/logo.png" height="100px")
+                p.align-self-end.pb-3.text-success admin
         block content
