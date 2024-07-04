@@ -24,12 +24,23 @@ const baseOntologyURI=config.sparql.baseOntologyURI
 //const db = require('./../components/db')
 
 
+function authenticate(req,res,next){
+  if(req.cookies.unlock==="true"){
+    next()
+  }else{
+    const previousPage = req.headers.referer;
+    if (previousPage) {
+      res.redirect(previousPage);
+    } else {
+      // Handle case where referrer is missing (e.g., redirect to homepage)
+      res.redirect('/');
+    }
+  }
 
+}
 
-router.get('/',async function(req,res,next){
-
+router.get('/', authenticate, async function(req,res,next){
   res.render('brapi', { title: 'Admin BrAPI Calls'})
-
 })
 
 
@@ -135,7 +146,6 @@ router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
     defaultCall.metadata.status[0].stack=err.stack
     res.json(defaultCall)
   }
-
 })
 
 router.get('/listCalls/:moduleName/:callName/report',async function(req,res,next){
@@ -155,6 +165,7 @@ router.get('/listcalls/:moduleName/:callName/json', function(req, res, next) {
   let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
   res.json(json)
 });
+
 /*
 router.get('/listcalls/:moduleName/:callName/mongodb/insertOne', async function(req, res, next) {
   let {moduleName,callName}=req.params
@@ -186,7 +197,7 @@ router.post('/listcalls/:moduleName/:callName/update', async function(req, res, 
 
 
 //TODO init both datasets
-router.get('/dataset/init', async function(req, res, next) {
+router.get('/dataset/init', authenticate,  async function(req, res, next) {
   let result=[]
   result[0]=await datasetManagement.init("staging")
   result[1]=await datasetManagement.init("production")
@@ -205,12 +216,12 @@ router.get('/dataset/status/:uid', async function(req, res, next) {
   res.render("dataset/status", payload)
 })
 
-router.get('/dataset/list', async function(req, res, next) {
+router.get('/dataset/list', authenticate, async function(req, res, next) {
   result=await datasetManagement.list("staging")
   res.render("dataset/list",{result: {staging:result.data,production:[]},access_point})
 })
 
-router.get("/dataset/list/duplicates/:graph",async function(req,res){
+router.get("/dataset/list/duplicates/:graph", authenticate, async function(req,res){
   let graph=req.params.graph
   let query=new Query()
   query.graph=`${graph}:`
@@ -228,7 +239,7 @@ router.get("/dataset/list/duplicates/:graph",async function(req,res){
   res.render("dataset/duplicates-investigations", {result:result.data,graph})
 })
 
-router.post('/dataset/list/duplicates/:graph', async function(req, res, next) {
+router.post('/dataset/list/duplicates/:graph', authenticate, async function(req, res, next) {
   let graph=req.params.graph
   let id=req.body.id
   let query = new Query()
@@ -241,13 +252,14 @@ router.post('/dataset/list/duplicates/:graph', async function(req, res, next) {
     `?dsInvestigation miappe:hasIdentifier "${id}"^^xsd:string .`,
     "?dsInvestigation miappe:hasName ?investigationName .",
     "?dsInvestigation miappe:hasDatabaseId ?investigationDbId ."
-
   ]
   query.build()
   result=await query.send()
   res.render("dataset/duplicates-investigations-manage", {result:result.data,graph,id})
 })
 
+
+//TODO check that submitter has access
 router.post('/dataset/submit/:uid', async function(req, res, next) {
   const formData=require("./../components/helpers/formData")
   let form_data = await formData.singleFile(req)
@@ -266,6 +278,23 @@ router.post('/dataset/submit/:uid', async function(req, res, next) {
   }
 })
 
+
+//TODO change graph selection
+router.get('/dataset/list/species/:graph', async function(req, res, next) {
+  let graph=req.params.graph
+  let query=new Query()
+  query.graph=`${graph}:`
+  query.selectors = ["?genus","?species"]
+  query.action = "SELECT"
+  query.triples=[
+      "?biologicalMaterial a miappe:biological_material .",
+      `?biologicalMaterial miappe:hasGenus ?genus .`,
+      `?biologicalMaterial miappe:hasSpecies ?species .`
+  ]
+  query.build()
+  result=await query.send()
+  res.render("dataset/species", {result:result.data,graph})
+})
 
 
 module.exports = router;
