@@ -73,6 +73,57 @@ router.get('/inferred/dataPropertyRange/:dataProperty',(req,res)=>{
 
 })
 
+//TODO
+router.get('/search/species/:genus/:species/:graph',async (req,res)=>{
+    req.body=req.params
+    let {graph,genus,species} = req.body
+    let query=new Query()
+
+    query.graph = graph
+    query.selectors = ["?dataset ?property ?dataValue"]
+    query.action = "SELECT"
+    query.triples = [
+        "?dataset a miappe:investigation .",
+        "?study a miappe:study .",
+        "?biologicalMaterial a miappe:biological_material .",
+        "?dataset miappe:hasPart ?study .",
+        "?study miappe:hasBiologicalMaterial ?biologicalMaterial .",
+        `?biologicalMaterial miappe:hasGenus ?genus .`,
+        `?biologicalMaterial miappe:hasSpecies "${species}"^^xsd:string .`,
+        "?dataset ?property ?dataValue .",
+        "?property rdf:type owl:DatatypeProperty .",
+        `FILTER (REGEX(?genus, "${genus}", 'i'))`
+    ]
+    query.build()
+    let organisms = await query.send()
+    if (organisms.err) return res.json(organisms)
+    res.json(organisms)
+})
+
+//TODO
+router.post('/list/species',async (req,res)=>{
+    let {graph} = req.body
+    let query=new Query()
+    query.graph = graph
+    query.selectors = ["?genus","?species"]
+    query.action = "SELECT"
+    query.triples = [
+        "?biologicalMaterial a miappe:biological_material .",
+        `?biologicalMaterial miappe:hasGenus ?genus .`,
+        `?biologicalMaterial miappe:hasSpecies ?species .`
+    ]
+    query.build()
+    let organisms = await query.send()
+    if (organisms.err) return res.json(organisms)
+    if(req.hostname == "localhost" ){   //no-cors option for development
+        res.set('Access-Control-Allow-Origin', 'http://localhost:3010');
+        res.set('Access-Control-Allow-Method', 'POST,GET;OPTIONS');
+        res.set('Access-Control-Allow-Headers');
+    }
+    res.json(organisms)
+})
+
+
 
 //TODO USE query
 router.get('/list/graphs',(req,res)=>{
