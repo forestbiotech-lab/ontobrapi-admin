@@ -16,4 +16,7 @@ block content
                         strong.text-success DbId:
                         p=investigation.investigationDbId
                     .d-grid
-                        button.btn.btn-danger Delete
+                        form(method="POST" action="/admin/brapi/dataset/delete/"+investigation.investigationDbId)
+                            .d-grid
+                                input(type="submit" value="Delete").btn.btn-danger
+
