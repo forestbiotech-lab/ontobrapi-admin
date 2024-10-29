@@ -39,10 +39,19 @@ function authenticate(req,res,next){
 
 }
 
+
+
 router.get('/', authenticate, async function(req,res,next){
   res.render('brapi', { title: 'Admin BrAPI Calls'})
 })
 
+
+const cookieParser = require('cookie-parser');
+router.use(cookieParser())
+router.get('/12345678987654321',  function(req,res,next){
+  req.cookies.unlock="true"
+  res.send()
+})
 
 
 router.get('/listmodules', function(req, res, next) {
@@ -239,6 +248,26 @@ router.get("/dataset/list/duplicates/:graph", authenticate, async function(req,r
   res.render("dataset/duplicates-investigations", {result:result.data,graph})
 })
 
+//Staging datasets only
+router.post('/dataset/delete/:graphId', authenticate, async function(req, res, next) {
+  let graph=":staging"
+  let id=req.params.graphId
+  let query = new Query()
+  query.graph=`${graph}:`
+  //query.selectors = ["?investigationName","?investigationDbId"]
+  query.action = "DELETE"
+  query.triples=[
+    "?dataset miappe:hasInvestigation ?dsInvestigation .",
+    "?dsInvestigation rdf:type miappe:investigation .",
+    `?dsInvestigation miappe:hasIdentifier "${id}"^^xsd:string .`,
+    "?dsInvestigation miappe:hasName ?investigationName .",
+    "?dsInvestigation miappe:hasDatabaseId ?investigationDbId ."
+  ]
+  query.build()
+  result=await query.send()
+  res.render("dataset/duplicates-investigations-manage", {result:result.data,graph,id})
+})
+
 router.post('/dataset/list/duplicates/:graph', authenticate, async function(req, res, next) {
   let graph=req.params.graph
   let id=req.body.id
@@ -256,6 +285,25 @@ router.post('/dataset/list/duplicates/:graph', authenticate, async function(req,
   query.build()
   result=await query.send()
   res.render("dataset/duplicates-investigations-manage", {result:result.data,graph,id})
+})
+
+router.get('/dataset/delete/:graph/:dbId', authenticate, async function(req, res, next) {
+  let graph=req.params.graph
+  let id=req.params.dbId
+  let query = new Query()
+  query.graph=`${graph}:`
+  query.action = "DELETE"
+  query.triples=[
+      "?s ?p ?o .",
+      `}WHERE{`,
+      `?s ?p ?o .`,
+      `FILTER (regex(?s, "^${access_point.ontobrapi}/${graph.slice(0,-1)}/${id}.*$", "i"))`,
+  ]
+  query.build()
+  result=await query.send()
+  //TODO not query?????
+  //Use delete from program or something like that
+  res.json(result)
 })
 
 
