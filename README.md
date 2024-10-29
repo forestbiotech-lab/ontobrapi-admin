@@ -86,6 +86,9 @@ Caching of the calls is done via MongoDB. The calls are serialized based on the 
 
 To connect to the mongoDB server you can use mongosh `mongosh "mongodb://localhost" --apiVersion 1 --username <<username>> --password <<password>>`  as documented here: https://www.mongodb.com/docs/mongodb-shell/ 
 
+Set remote MongoDB locally, through ssh tunnel.
+`ssh -L 27017:localhost:27017 <server>`
+
 To perform CRUD operation check: https://www.mongodb.com/docs/mongodb-shell/crud/#std-label-mdb-shell-crud
 
 Select the appropriate database: `use <<db>>`:
