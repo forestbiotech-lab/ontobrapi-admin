@@ -6,6 +6,7 @@
     "user": "dba",
     "pass": "dba",
     "host": "localhost",
+    "protocol": "http",
     "port": "8890",
     "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#",
     "ontoBrAPI": "http://brapi.biodata.pt"
