@@ -50,7 +50,8 @@ const cookieParser = require('cookie-parser');
 router.use(cookieParser())
 router.get('/12345678987654321',  function(req,res,next){
   req.cookies.unlock="true"
-  res.send()
+  res.cookie("unlock","true")
+  res.send("Unlocked")
 })
 
 
