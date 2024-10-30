@@ -44,11 +44,17 @@
       }
     ],
     "contactEmail": "brunovasquescosta@tecnico.ulisboa.pt",
-    "documentationURL": "https://github.com/forestbiotech-lab/PHENO/wiki",
+    "documentationURL": "institute.org/server",
     "location": "PT",
     "organizationName": "Biodata.pt",
-    "organizationURL": "https://biodata.pt",
-    "serverDescription": "The PHENO - BrAPI Test Server\nWeb Server - Nginx 1.25.3\nDatabase - Openlink Virtuso V07.20.3215\nSupported BrAPI Version - V2.0",
+    "organizationURL": "biodata.pt/home",
+    "serverDescription": "The BrAPI Test Server\nWeb Server - Nginx 1.25.3\nDatabase - Openlink Virtuso V07.20.3215\nSupported BrAPI Version - V2.0",
     "serverName": "Pheno Test Server"
+  },
+  "_anchor": {
+    "class": "",
+    "s": "",
+    "p": "rdf:type",
+    "o": ""
   }
 }
