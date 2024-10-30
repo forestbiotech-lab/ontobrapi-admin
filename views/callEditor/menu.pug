@@ -1,15 +1,24 @@
-nav(class=listModules,aria-label='breadcrumb')
+nav(class=listVersions, aria-label='breadcrumb')
     ol.breadcrumb
-        li.breadcrumb-item.active(aria-current='page') List of Modules
-nav(class=listCalls,aria-label='breadcrumb')
+        li.breadcrumb-item(aria-current='page') List of Versions
+nav(class=listModules, aria-label='breadcrumb')
     ol.breadcrumb
         li.breadcrumb-item
-            a(href='/admin/brapi/listmodules') List of Modules
+            a(href=`/admin/brapi/listversions`) List of Versions
+        li.breadcrumb-item.active(aria-current='page') List of Modules
+nav(class=listCalls, aria-label='breadcrumb')
+    ol.breadcrumb
+        li.breadcrumb-item
+            a(href=`/admin/brapi/listversions`) List of Versions
+        li.breadcrumb-item
+            a(href=`/admin/brapi/${version}/listmodules`) List of Modules
         li.breadcrumb-item.active(aria-current='page') List of Calls
 nav(class=mapCall,aria-label='breadcrumb')
     ol.breadcrumb
         li.breadcrumb-item
-            a(href='/admin/brapi/listmodules') List of Modules
+            a(href=`/admin/brapi/listversions`) List of Versions
         li.breadcrumb-item
-            a(href=`/admin/brapi/listCalls/${moduleName}/list`) List of Calls
+            a(href=`/admin/brapi/${version}/listmodules`) List of Modules
+        li.breadcrumb-item
+            a(href=`/admin/brapi/${version}/listCalls/${moduleName}/list`) List of Calls
         li.breadcrumb-item.active(aria-current='page') Map Call

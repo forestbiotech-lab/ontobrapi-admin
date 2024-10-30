@@ -1,0 +1,9 @@
+extends ../layout
+block content
+    include menu
+    h2 List of Version
+    table.table
+        each version in versions
+            tr
+                td
+                    a(href=`${version}/listmodules`)=version
