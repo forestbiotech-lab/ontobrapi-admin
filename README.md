@@ -101,7 +101,18 @@ https://www.mongodb.com/docs/atlas/atlas-search/tutorial/pagination-tutorial/
 
 - Aggredation: Use `db.<<collection>>.aggregation([{"$match":{}},{"$skip":0},{"$limit":1000}])` $skip
 
+## Debuggin
+The database in use is stored in the .config.json file, under the attribute monogo.database
 
+``` json
+{
+    mongo:{
+        database: "yourdatabase"
+    }
+}
+```
+
+To list the available collections `use <<yourdatabase>>; db.getCollectionNames()` 
 
 # Dataset management
 
