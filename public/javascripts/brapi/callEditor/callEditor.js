@@ -5,7 +5,7 @@
             loadOntoTerms(data)
         },
         fail:function(jqXHR,textStatus,data){
-            displayToast("Error",err,4000)
+            displayToast("Error", err, 4000)
         }
     })
 
