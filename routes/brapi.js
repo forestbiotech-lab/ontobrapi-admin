@@ -23,6 +23,15 @@ const baseOntologyURI=config.sparql.baseOntologyURI
 //TODO implement MongoDB on docker-compose
 //const db = require('./../components/db')
 
+//Export elsewhere this functions
+function getVersion(inputVersion){
+  let version=inputVersion
+  if(!version.match("^v[0-9]*\\.*[0-9]*$")){
+    version="v2.0"
+  }
+  return version
+}
+
 
 function authenticate(req,res,next){
   if(req.cookies.unlock==="true"){
@@ -55,35 +64,53 @@ router.get('/12345678987654321',  function(req,res,next){
 })
 
 
-router.get('/listmodules', function(req, res, next) {
-  let modules=glob.sync('components/modules/*')
-  modules=modules.map(m=>m.split("/").pop())
+
+router.get('/listversions', function(req,res){
+  let versions=glob.sync(`components/calls/*/`)
+  versions=versions.map(m=>m.slice(0,-1).split("/").pop())
+  let listVersions="block"
+  let listCalls="d-none"
+  let listModules="d-none"
+  let mapCall="d-none"
+  res.render('callEditor/listVersions', { title: 'Onto BrAPI - Version List',listCalls,listModules,listVersions,mapCall,versions})
+})
+
+
+router.get('/:version/listmodules', function(req, res, next) {
+  let version=getVersion(req.params.version)
+  let modules=glob.sync(`components/calls/${version}/modules/*/`)
+  modules=modules.map(m=>m.slice(0,-1).split("/").pop())
+  let listVersions="d-none"
   let listCalls="d-none"
   let listModules="block"
   let mapCall="d-none"
-  res.render('callEditor/listModules', { title: 'Onto BrAPI - Module List',modules,listCalls,listModules,mapCall})
+  res.render('callEditor/listModules', { title: 'Onto BrAPI - Module List',modules,listVersions,listCalls,listModules,mapCall,version})
 });
 
 
-router.get('/listcalls/:moduleName/list', function(req, res, next) {
+router.get('/:version/listcalls/:moduleName/list', function(req, res, next) {
+  let version=getVersion(req.params.version)
+  //TODO protect other paths
   let moduleName=req.params.moduleName
-  let calls=glob.sync(`components/modules/${moduleName}/schemes/*.json`)
+  let calls=glob.sync(`components/calls/${version}/modules/${moduleName}/schemes/*.json`)
   calls=calls.map(c=>c.split("/").pop())
+  let listVersions="d-none"
   let listCalls="block"
   let listModules="d-none"
   let mapCall="d-none"
-  res.render('callEditor/listCalls', { title: 'Onto BrAPI - Call List',calls,listModules,listCalls,mapCall})
+  res.render('callEditor/listCalls', { title: 'Onto BrAPI - Call List',calls,listModules,listCalls,listVersions,mapCall,version})
 });
 
 
-router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next) {
+router.get('/:version/listcalls/:moduleName/:callName/map', async function(req, res, next) {
+  let version=getVersion(req.params.version)
   let moduleName=req.params.moduleName
   let callName=req.params.callName
   //let json=require(`.././componentes/modules/${moduleName}/schemes/${callName}`)
 
-  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
+  let json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/maps/${callName}`))
   let className=json["_anchor"].class
-  json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/schemes/${callName}`))
+  json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`))
 
   prettyHtml=require('json-pretty-html').default
   let html=prettyHtml(json)
@@ -97,6 +124,7 @@ router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next
     console.log(err)
     anchorProperties=[]
   }
+  let listVersions="d-none"
   let listCalls="d-none"
   let listModules="d-none"
   let mapCall="block"
@@ -107,22 +135,26 @@ router.get('/listcalls/:moduleName/:callName/map', async function(req, res, next
     anchorProperties,
     html,
     mapCall,
+    listVersions,
     listCalls,
     listModules,
     moduleName,
+    version,
     anchor:className
   })
 });
 
-router.get('/listcalls/:moduleName/:callName/json', function(req, res, next) {
+router.get('/:version/listcalls/:moduleName/:callName/json', function(req, res, next) {
+  let version=getVersion(req.params.version)
   let moduleName=req.params.moduleName
   let callName=req.params.callName
-  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
+  let json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/maps/${callName}`))
   res.json(json)
 });
 
 
-router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next){
+router.get('/:version/listCalls/:moduleName/:callName/result',async function(req,res,next){
+  let version=getVersion(req.params.version)
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl
     let servers= {
@@ -130,14 +162,15 @@ router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next
       activeGraph: require("./../.config.json").sparql.ontoBrAPIgraph
     }
     let {moduleName,callName}=req.params
-    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
+    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams,version)
     res.json(callStructure)
   }catch(err){
     res.json(err)
   }
 })
 
-router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
+router.get('/:version/listCalls/:moduleName/:callName/gui',async function(req,res,next){
+  let version=getVersion(req.params.version)
   let listCalls="d-none"
   let listModules="d-none"
   let mapCall="block"
@@ -148,8 +181,8 @@ router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
       activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
     }
     let {moduleName,callName}=req.params
-    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
-    res.render( "callEditor/callGUI",{data:callStructure,moduleName,listCalls,listModules,mapCall})
+    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams,version)
+    res.render( "callEditor/callGUI",{data:callStructure,moduleName,listCalls,listModules,mapCall,version})
   }catch(err){
     defaultCall.metadata.status[0].message=err.message
     defaultCall.metadata.status[0].messageType="Error"
@@ -158,23 +191,18 @@ router.get('/listCalls/:moduleName/:callName/gui',async function(req,res,next){
   }
 })
 
-router.get('/listCalls/:moduleName/:callName/report',async function(req,res,next){
+router.get('/:version/listCalls/:moduleName/:callName/report',async function(req,res,next){
+  let version=getVersion(req.params.version)
   let listCalls="d-none"
   let listModules="d-none"
   let mapCall="block"
   let server=`${req.protocol}://${req.headers.host}/`
   let {moduleName,callName}=req.params
-  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
+  let json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/maps/${callName}`))
   res.render( "callEditor/reportGUI",{data:json,callName,moduleName,listCalls,listModules,mapCall})
 
 })
 
-router.get('/listcalls/:moduleName/:callName/json', function(req, res, next) {
-  let moduleName=req.params.moduleName
-  let callName=req.params.callName
-  let json=JSON.parse(fs.readFileSync(`components/modules/${moduleName}/maps/${callName}`))
-  res.json(json)
-});
 
 /*
 router.get('/listcalls/:moduleName/:callName/mongodb/insertOne', async function(req, res, next) {
@@ -186,10 +214,11 @@ router.get('/listcalls/:moduleName/:callName/mongodb/insertOne', async function(
 });
 //This call adds the mapping information
 */
-router.post('/listcalls/:moduleName/:callName/update', async function(req, res, next) {
+router.post('/:version/listcalls/:moduleName/:callName/update', async function(req, res, next) {
+  let version=getVersion(req.params.version)
   let moduleName=req.params.moduleName
   let callName=req.params.callName
-  let file=`components/modules/${moduleName}/maps/${callName}`
+  let file=`components/calls/${version}/modules/${moduleName}/maps/${callName}`
   let data=req.body.data
   let json=JSON.parse(data)
   let writeData=JSON.stringify(json,null,4)
