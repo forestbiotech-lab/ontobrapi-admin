@@ -4,8 +4,8 @@ const sparql=require('./../../.config').sparql
 
 let host=sparql.host
 let port=sparql.port
-
-const endpointUrl = `http://${host}:${port}/sparql`
+let protocol=sparql.protocol
+const endpointUrl = `${protocol}://${host}:${port}/sparql`
 
 let subject = 's'
 let object = 'o'

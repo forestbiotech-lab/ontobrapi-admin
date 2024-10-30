@@ -7,7 +7,8 @@ class Query{
     constructor(uid){
         let host=sparql.host
         let port=sparql.port
-        const endpointUrl = `http://${host}:${port}/sparql`
+        let protocol=sparql.protocol
+        const endpointUrl = `${protocol}://${host}:${port}/sparql`
         this.client = new SparqlClient({ endpointUrl })
         this.prefixes=prefixes
         this._suffix=""
