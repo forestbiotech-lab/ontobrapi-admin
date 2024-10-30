@@ -126,8 +126,8 @@ router.get('/listCalls/:moduleName/:callName/result',async function(req,res,next
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl
     let servers= {
-      server:`${req.protocol}://${req.headers.host}/`,
-      activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
+      server: `${req.protocol}://${req.headers.host}/`,
+      activeGraph: require("./../.config.json").sparql.ontoBrAPIgraph
     }
     let {moduleName,callName}=req.params
     let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams)
