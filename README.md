@@ -101,7 +101,7 @@ https://www.mongodb.com/docs/atlas/atlas-search/tutorial/pagination-tutorial/
 
 - Aggredation: Use `db.<<collection>>.aggregation([{"$match":{}},{"$skip":0},{"$limit":1000}])` $skip
 
-## Debuggin
+## Debugging
 The database in use is stored in the .config.json file, under the attribute monogo.database
 
 ``` json
@@ -161,3 +161,33 @@ The new dataset is allways added to the staging graph with the staging URI. An U
 
 It is important that the datasets get initialized, which should run successfully on each `npm start` or alternatively using the `npm run init-dataset` command, otherwise, the ontobrapi explorer will not work. 
 
+# Brapi calls
+mongodb structure
+db.[v1].[call]
+
+## Call availability
+Call details are loaded on JSON file under the attributes "_list-call","_call-url","_call-get","_call-post" in JSON map. 
+
+Cache is loaded to "serverInfo.json" collection with the structure:
+``` json
+{
+    callUrl: [string],
+    datatypes: {
+        "application/json":[booleann],
+        (...)
+    },
+    versions: {
+        "v2.0":[boolean]
+        "v2.1":[boolean]
+        (...)
+    },
+    methods:{
+        get:[boolean],
+        post:[boolean],
+        (...)
+    }
+}
+```
+
+The serverInfo call then iterated the collection to output the results
+The changes on the map view are stored to file and then cached.
