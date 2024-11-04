@@ -1,173 +1,178 @@
 {
-    "_anchor": {
-        "class": "investigation",
-        "s": "?investigation",
-        "p": "rdf:type",
-        "o": "ppeo:investigation"
-    },
-    "@context": [
-        "https://brapi.org/jsonld/context/metadata.jsonld"
+  "_anchor": {
+    "class": "investigation",
+    "s": "?investigation",
+    "p": "rdf:type",
+    "o": "ppeo:investigation"
+  },
+  "@context": [
+    "https://brapi.org/jsonld/context/metadata.jsonld"
+  ],
+  "metadata": {
+    "datafiles": [
+      {
+        "fileDescription": "This is an Excel data file",
+        "fileMD5Hash": "c2365e900c81a89cf74d83dab60df146",
+        "fileName": "datafile.xlsx",
+        "fileSize": 4398,
+        "fileType": "application/vnd.ms-excel",
+        "fileURL": "https://wiki.brapi.org/examples/datafile.xlsx"
+      }
     ],
-    "metadata": {
-        "datafiles": [
-            {
-                "fileDescription": "This is an Excel data file",
-                "fileMD5Hash": "c2365e900c81a89cf74d83dab60df146",
-                "fileName": "datafile.xlsx",
-                "fileSize": 4398,
-                "fileType": "application/vnd.ms-excel",
-                "fileURL": "https://wiki.brapi.org/examples/datafile.xlsx"
-            }
-        ],
-        "pagination": {
-            "currentPage": 0,
-            "pageSize": 1000,
-            "totalCount": 10,
-            "totalPages": 1
-        },
-        "status": [
-            {
-                "message": "Request accepted, response successful",
-                "messageType": "INFO"
-            }
-        ]
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 10,
+      "totalPages": 1
     },
-    "result": {
-        "data": [
+    "status": [
+      {
+        "message": "Request accepted, response successful",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "abbreviation": "P2",
+        "additionalInfo": {
+          "License": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasLicense"
+              }
+            ],
+            "_value": "string"
+          },
+          "MIAPPEversion": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasMIAPPEVersion"
+              }
+            ],
+            "_value": "string"
+          },
+          "associatedPublication": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasAssociatedPublication"
+              }
+            ],
+            "_value": "Testing string"
+          },
+          "submissionDate": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasSubmissionDate"
+              }
+            ],
+            "_value": ""
+          },
+          "publicReleaseDate": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasPublicReleaseDate"
+              }
+            ],
+            "_value": ""
+          }
+        },
+        "commonCropName": {
+          "_sparQL": [
             {
-                "abbreviation": "P2",
-                "additionalInfo": {
-                    "License": {
-                        "_sparQL": [
-                            {
-                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                                "property": "hasLicense"
-                            }
-                        ],
-                        "_value": "string"
-                    },
-                    "MIAPPEversion": {
-                        "_sparQL": [
-                            {
-                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                                "property": "hasMIAPPEVersion"
-                            }
-                        ],
-                        "_value": "string"
-                    },
-                    "associatedPublication": {
-                        "_sparQL": [
-                            {
-                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                                "property": "hasAssociatedPublication"
-                            }
-                        ],
-                        "_value": "Testing string"
-                    },
-                    "submissionDate": {
-                        "_sparQL": [
-                            {
-                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                                "property": "hasSubmissionDate"
-                            }
-                        ],
-                        "_value": ""
-                    },
-                    "publicReleaseDate": {
-                        "_sparQL": [
-                            {
-                                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                                "property": "hasPublicReleaseDate"
-                            }
-                        ],
-                        "_value": ""
-                    }
-                },
-                "commonCropName": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#study",
-                            "property": "hasPart"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
-                            "property": "hasBiologicalMaterial"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
-                            "property": "hasTaxonIdentifier"
-                        }
-                    ],
-                    "_value": "Tomatillo"
-                },
-                "documentationURL": "https://wiki.brapi.org",
-                "externalReferences": [ {
-                    "ref":"",
-                    "ref2": ""
-                }
-                ],
-                "leadPersonDbId": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#study",
-                            "property": "hasPart"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#person",
-                            "property": "hasPersonWithRole"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#person",
-                            "property": "hasIdentifier"
-                        }
-                    ],
-                    "_value": "fe6f5c50"
-                },
-                "leadPersonName": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#study",
-                            "property": "hasPart"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#person",
-                            "property": "hasPersonWithRole"
-                        },
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#person",
-                            "property": "hasName"
-                        }
-                    ],
-                    "_value": "Bob Robertson"
-                },
-                "objective": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                            "property": "hasDescription"
-                        }
-                    ],
-                    "_value": "Make a better tomatillo"
-                },
-                "programDbId": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                            "property": "hasIdentifier"
-                        }
-                    ],
-                    "_value": "f60f15b2"
-                },
-                "programName": {
-                    "_sparQL": [
-                        {
-                            "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                            "property": "hasName"
-                        }
-                    ],
-                    "_value": "Tomatillo_Breeding_Program"
-                }
+              "class": "http://purl.org/ppeo/PPEO.owl#study",
+              "property": "hasPart"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+              "property": "hasBiologicalMaterial"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+              "property": "hasTaxonIdentifier"
             }
-        ]
-    }
+          ],
+          "_value": "Tomatillo"
+        },
+        "documentationURL": "https://wiki.brapi.org",
+        "externalReferences": [
+          {
+            "ref": "",
+            "ref2": ""
+          }
+        ],
+        "leadPersonDbId": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#study",
+              "property": "hasPart"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#person",
+              "property": "hasPersonWithRole"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#person",
+              "property": "hasIdentifier"
+            }
+          ],
+          "_value": "fe6f5c50"
+        },
+        "leadPersonName": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#study",
+              "property": "hasPart"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#person",
+              "property": "hasPersonWithRole"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#person",
+              "property": "hasName"
+            }
+          ],
+          "_value": "Bob Robertson"
+        },
+        "objective": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasDescription"
+            }
+          ],
+          "_value": "Make a better tomatillo"
+        },
+        "programDbId": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasIdentifier"
+            }
+          ],
+          "_value": "f60f15b2"
+        },
+        "programName": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasName"
+            }
+          ],
+          "_value": "Tomatillo_Breeding_Program"
+        }
+      }
+    ]
+  },
+  "_call-get": "true",
+  "_call-url": "programs",
+  "_list-call": "true",
+  "_call-post": "true"
 }
