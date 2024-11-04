@@ -3,6 +3,7 @@ const router = express.Router();
 const freeQuery = require('.././components/sparql/freeQuery')
 const restructuring = require('./../components/helpers/restructuring')
 const fs=require("fs")
+const dbUtils=require("./../components/db/utils")
 
 
 router.get('/ontologyterms/:ontology/',(req,res)=>{
@@ -41,6 +42,62 @@ router.get('/ontologycomments/:ontology/',(req,res)=>{
         res.writeHead( 400, message, {'content-type' : 'text/plain'});
         res.end(message)
     })
+})
+
+router.post('/list-call/set/url', async (req,res)=>{
+    //TODO set to cache as well
+    let data=req.body
+    let {callUrl,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json["_call-url"] = callUrl
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        await dbUtils.setCallStatus(version,module,file)
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
+})
+
+router.post('/list-call/set/active',async (req,res)=>{
+    //TODO set to cache as well
+    let data=req.body
+    let {listCall,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json["_list-call"] = listCall
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        await dbUtils.setCallStatus(version,module,file)
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
+})
+router.post('/list-call/set/get',async (req,res)=>{
+    let data=req.body
+    let {get,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json["_call-get"] = get
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        await dbUtils.setCallStatus(version,module,file)
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
+})
+router.post('/list-call/set/post',async (req,res)=>{
+    let data=req.body
+    let {post,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json["_call-post"] = post
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        await dbUtils.setCallStatus(version,module,file)
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
 })
 
 router.post('/anchor/set/class',(req,res)=>{
