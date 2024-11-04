@@ -9,6 +9,7 @@
     "test": "mocha",
     "puppeteer": "mocha test/puppeteer_validate_brapi_mapping.test.js",
     "update-calls": "node components/services/updateCalls.js",
+    "update-server-info": "node components/services/updateServerInfo.js",
     "init-dataset": "node components/services/initDataset.js"
   },
   "dependencies": {
