@@ -39,5 +39,5 @@ async function run(){
 run().then(data=>{
     console.log("Done")
 }).catch(err=>{
-
+    console.log(err)
 })
