@@ -26,7 +26,7 @@ class Query{
                 'dataset:hasStatus rdfs:label "hasStatus" .',
                 'dataset:hasStatus rdfs:subPropertyOf void:hasProperty .',
                 'dataset:hasStatus rdf:type owl:ObjectProperty .',
-                'dataset: miappe:hasStatus "Awaiting validation"^^xsd:string .' //Default for new dataset
+                'dataset: miappe:hasStatus "Awaiting approval"^^xsd:string .' //Default for new dataset
             ]
         }else{
             this._newDataset=[]
