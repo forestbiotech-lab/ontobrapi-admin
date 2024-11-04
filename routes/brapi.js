@@ -163,15 +163,14 @@ router.get('/:version/listcalls/:moduleName/:callName/json', function(req, res, 
 
 
 router.get('/:version/listCalls/:moduleName/:callName/result',async function(req,res,next){
-  let version=getVersion(req.params.version)
   try{
     let requestParams=sanitizeParams(req.query) //TODO security check params based onl
     let servers= {
       server: `${req.protocol}://${req.headers.host}/`,
       activeGraph: require("./../.config.json").sparql.ontoBrAPIgraph
     }
-    let {moduleName,callName}=req.params
-    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams,version)
+    let {version, moduleName,callName}=req.params
+    let callStructure=await brapiAttributesQuery(servers, version, moduleName, callName, requestParams)
     res.json(callStructure)
   }catch(err){
     res.json(err)
@@ -179,7 +178,7 @@ router.get('/:version/listCalls/:moduleName/:callName/result',async function(req
 })
 
 router.get('/:version/listCalls/:moduleName/:callName/gui',async function(req,res,next){
-  let version=getVersion(req.params.version)
+  let listVersions="d-none"
   let listCalls="d-none"
   let listModules="d-none"
   let mapCall="block"
@@ -189,9 +188,9 @@ router.get('/:version/listCalls/:moduleName/:callName/gui',async function(req,re
       server:`${req.protocol}://${req.headers.host}/`,
       activeGraph:require("./../.config.json").sparql.ontoBrAPIgraph
     }
-    let {moduleName,callName}=req.params
-    let callStructure=await brapiAttributesQuery(servers,moduleName,callName,requestParams,version)
-    res.render( "callEditor/callGUI",{data:callStructure,moduleName,listCalls,listModules,mapCall,version})
+    let {version, moduleName,callName}=req.params
+    let callStructure=await brapiAttributesQuery(servers,version,moduleName,callName,requestParams)
+    res.render( "callEditor/callGUI",{data:callStructure,moduleName,listVersions,listCalls,listModules,mapCall,version})
   }catch(err){
     defaultCall.metadata.status[0].message=err.message
     defaultCall.metadata.status[0].messageType="Error"
@@ -202,13 +201,14 @@ router.get('/:version/listCalls/:moduleName/:callName/gui',async function(req,re
 
 router.get('/:version/listCalls/:moduleName/:callName/report',async function(req,res,next){
   let version=getVersion(req.params.version)
+  let listVersions="d-none"
   let listCalls="d-none"
   let listModules="d-none"
   let mapCall="block"
   let server=`${req.protocol}://${req.headers.host}/`
   let {moduleName,callName}=req.params
   let json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/maps/${callName}`))
-  res.render( "callEditor/reportGUI",{data:json,callName,moduleName,listCalls,listModules,mapCall})
+  res.render( "callEditor/reportGUI",{data:json,callName,version,moduleName,listVersions,listCalls,listModules,mapCall})
 
 })
 

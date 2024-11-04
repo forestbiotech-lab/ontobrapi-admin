@@ -171,17 +171,20 @@ WHERE {
 })
 
 router.get("/cache/createdAt",async (req,res)=>{
+    //TODO add version
     let now = Date.now()
     const referer = req.get('Referer') || req.get('referrer');
+    let version = referer.trimEnd("/").split("/").slice(-5)[0]
     let callName = referer.trimEnd("/").split("/").splice(-2)[0]
-    let createdAt= await cache.age(callName)
-
+    let createdAt= await cache.age(`${version}.${callName}`)
     res.json({ageHH:Math.round((now-createdAt)/1000/60/60),createdAt})
 })
 router.get("/cache/clear",async (req,res)=>{
+    //TODO add version
     let referer = req.get('Referer') || req.get('referrer');
+    let version = referer.trimEnd("/").split("/").slice(-5)[0]
     let callName = referer.trimEnd("/").split("/").splice(-2)[0]
-    let clear= await cache.clear(callName)
+    let clear= await cache.clear(`${version}.${callName}`)
     res.json({clear})
 })
 

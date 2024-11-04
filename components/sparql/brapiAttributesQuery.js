@@ -100,12 +100,12 @@ function getResults(querySelectors,triples,options){
 
 //Define request options for SparQL Query
 //Setup metadata response
-async function getAnchors(servers,moduleName,callName,requestParam,requestTrip){
+async function getAnchors(servers,version,moduleName,callName,requestParam,requestTrip){
     devServer=servers.server
     activeGraph=servers.activeGraph
 
     //Define class and property
-    let callStructure=Object.assign({},getCallStructure(moduleName,callName))
+    let callStructure=Object.assign({},getCallStructure(version,moduleName,callName))
     let subject,predicate,object,anchor
     if(callStructure['_anchor']){
         anchor=callStructure['_anchor'].class
@@ -246,9 +246,9 @@ function isOntologicalTerm(value){
     }else{result=false}
     return result
 }
-function getCallStructure(moduleName,callName){
-    //Get from componets/modules/genotyping/schemes/${name}
-    let path="components/modules"
+function getCallStructure(version,moduleName,callName){
+    //Get from components/v2.0/modules/genotyping/schemes/${name}
+    let path=`components/calls/${version}/modules`
     let callStructurePath=`${path}/${moduleName}/maps/${callName}`
     let callStructure
     try{
@@ -262,10 +262,10 @@ function getCallStructure(moduleName,callName){
 
 //    <http://brapi.biodata.pt/raiz/obs_000122> ppeo:hasObservedSubject ?obs_unit .
 
-module.exports = async function (servers,moduleName,callName,requestParam,requestTrip) {
-    let queryResults={callStructure:await cache.callStructure.retrieve(callName,moduleName,getCallStructure)}
+module.exports = async function (servers,version, moduleName,callName,requestParam,requestTrip) {
+    let queryResults={callStructure:await cache.callStructure.retrieve(version,callName,moduleName,getCallStructure)}
     requestParam=filterDB(requestParam,queryResults)
-    let cacheRetrieval = await cache.query(servers,moduleName,callName,requestParam,requestTrip)
+    let cacheRetrieval = await cache.queryVersion(servers,version,moduleName,callName,requestParam,requestTrip)
 
 
     //Save callStructure in cache
@@ -274,7 +274,7 @@ module.exports = async function (servers,moduleName,callName,requestParam,reques
     if(cacheRetrieval.found === false){
         let callStructure=queryResults.callStructure
         requestParam={}
-        queryResults=await getAnchors(servers,moduleName,callName,requestParam,requestTrip)
+        queryResults=await getAnchors(servers,version,moduleName,callName,requestParam,requestTrip)
         queryResults.callStructure=callStructure
         queryResults.callStructure.metadata.pagination.totalCount = queryResults.results.length
         queryResults.callStructure.metadata.pagination.totalPages = Math.ceil(
@@ -282,6 +282,8 @@ module.exports = async function (servers,moduleName,callName,requestParam,reques
 
         //TODO deal with filtering on call without cache
         return Promise.all(queryResults.results).then(results=>{
+            //Adds version
+            callName=`${version}.${callName}`
             let id=
                 cache.define(callName,results)
             //TODO do something with this id

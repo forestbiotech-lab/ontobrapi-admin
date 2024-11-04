@@ -2,6 +2,35 @@ const DB= require("./mongodb")
 
 const CACHE_DAYS=1
 
+
+async function queryVersion(servers,version,moduleName,callName,requestParam,requestTrip) {
+    let now=Date.now()
+    let db=await new DB();
+    let collection=db.client.collection(`${version}.${callName}`)
+
+    //TODO query options
+
+    let callStructure=await collection.aggregate(requestParam).toArray()
+    if(callStructure.length>0) {
+        if (callStructure[0]._createdAt + CACHE_DAYS * 24 * 60 * 60 * 1000 > now) { //if cache is older than CACHE_DAYS
+            callStructure = callStructure.map(result => {
+                delete result._createdAt
+                delete result._id
+                return result
+            })
+        } else {
+            //cache duration elapsed
+            let deleteResult = await clear(callName)
+            callStructure = []
+        }
+    }
+    //TODO lookup in cache for call
+    //TODO if params filter call
+    //TODO return {data:null, found:false, error:""}
+    await db.disconnect()
+    return {data:callStructure, found:callStructure.length>0, error:"",totalResults:await count(callName)}
+}
+
 async function query(servers,moduleName,callName,requestParam,requestTrip) {
     let now=Date.now()
     let db=await new DB();
@@ -62,20 +91,20 @@ async function update(callName, results, requestParams) {
     //return insertResult
 }
 
-async function retrieve(callName,moduleName,getCallStructure) {
+async function retrieve(version,callName,moduleName,getCallStructure) {
     let db=await new DB();
-    let collection=db.client.collection(callName+".structure")
+    let collection=db.client.collection(`${version}.${callName}.structure`)
     let callStructure= await collection.findOne({})
     if(callStructure == null){
-        callStructure=getCallStructure(moduleName,callName)
-        await store(callName,callStructure)
+        callStructure=getCallStructure(version,moduleName,callName)
+        await store(version, callName, callStructure)
     }
     await db.disconnect()
     return callStructure
 }
-async function store(callName,callStructure){
+async function store(version, callName,callStructure){
     let db=await new DB();
-    let collection=db.client.collection(callName+".structure")
+    let collection=db.client.collection(`${version}.${callName}.structure`)
     let insertResult= await collection.insertOne(callStructure)
     await db.disconnect()
     return insertResult
@@ -122,6 +151,7 @@ async function clearEntry(callName,filter){
 
 module.exports = {
     query,
+    queryVersion,
     define,
     callStructure:{retrieve,store},
     count,
