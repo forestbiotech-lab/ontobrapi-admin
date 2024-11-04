@@ -106,10 +106,15 @@ router.get('/:version/listcalls/:moduleName/:callName/map', async function(req, 
   let version=getVersion(req.params.version)
   let moduleName=req.params.moduleName
   let callName=req.params.callName
-  //let json=require(`.././componentes/modules/${moduleName}/schemes/${callName}`)
+
 
   let json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/maps/${callName}`))
+  //Must be listed here because json is redefined below
   let className=json["_anchor"].class
+  let listCall=json["_list-call"]
+  let callUrl=json["_call-url"]
+  let get=json["_call-get"]
+  let post=json["_call-post"]
   json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`))
 
   prettyHtml=require('json-pretty-html').default
@@ -140,6 +145,10 @@ router.get('/:version/listcalls/:moduleName/:callName/map', async function(req, 
     listModules,
     moduleName,
     version,
+    listCall,
+    callUrl,
+    post,
+    get,
     anchor:className
   })
 });
