@@ -1,56 +1,6 @@
-const { MongoClient } = require('mongodb');
+const DB= require("./mongodb")
 
 const CACHE_DAYS=1
-
-class DB {
-
-    constructor() {
-
-        return new Promise(async (res, rej) => {
-            this.config = require('./../../.config').mongo
-            this.url = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}`
-            this.dbName = this.config.database
-            let that=this
-            this.connected=false
-            try{
-                that.client = new MongoClient(that.url, { monitorCommands: true });
-                await that.connect();
-                res(that)
-            }catch(err){
-                console.log(err)
-                this.connected=false
-                rej(that)
-            }
-
-        })
-
-    }
-    async connect() {
-        if (this.connected) return Promise.resolve()
-        await this.client.connect()
-        this.connected=true
-        return
-    }
-    get client() {
-        if(this.connected){
-            return this._client.db(this.dbName)
-        }else{
-            return this._client
-        }
-    }
-    set client(value) {
-        this._client = value
-    }
-
-    async disconnect() {
-        if(this.connected==false) return Promise.resolve()
-        await this.client.client.close()
-        return
-    }
-
-}
-
-
 
 async function query(servers,moduleName,callName,requestParam,requestTrip) {
     let now=Date.now()
@@ -98,6 +48,20 @@ async function define(callName,results) {
     await db.disconnect()
     return insertResult
 }
+
+async function update(callName, results, requestParams) {
+    const now=Date.now()
+    let db=await new DB();
+    let collection=db.client.collection(callName)
+    await collection.updateOne(requestParams,{"$set":results})
+    //TODO date
+    //inserResult{ acknowledged:true/false, insertedIds:[], insertedCount:X}
+    //insertResult.insertedIds[0].toString()
+
+    await db.disconnect()
+    //return insertResult
+}
+
 async function retrieve(callName,moduleName,getCallStructure) {
     let db=await new DB();
     let collection=db.client.collection(callName+".structure")
@@ -124,21 +88,36 @@ async function count(callName){
     return count
 }
 async function age(callName){
-    let db=await new DB();
-    let collection=db.client.collection(callName)
-    let age=await collection.findOne({})
-    if(age) age=age._createdAt || Date.now()+1000*60*60
-    else age=Date.now()+1000*60*60
-    await db.disconnect()
-    return age
+    try {
+        let db = await new DB();
+        let collection = db.client.collection(callName)
+        let age = await collection.findOne({})
+        if (age) age = age._createdAt || Date.now() + 1000 * 60 * 60
+        else age = Date.now() + 1000 * 60 * 60
+        await db.disconnect()
+        return age
+    }catch(e){
+        return 0
+    }
+
 }
 
 async function clear(callName){
+    //todo rej. no connection
     let db=await new DB();
     let collection=db.client.collection(callName)
-    let age=await collection.deleteMany({})
+    let delMany=await collection.deleteMany({})
     await db.disconnect()
-    return age
+    return delMany
+}
+
+async function clearEntry(callName,filter){
+    //todo rej. no connection
+    let db=await new DB();
+    let collection=db.client.collection(callName)
+    let delOne=await collection.deleteOne(filter)
+    await db.disconnect()
+    return delOne
 }
 
 module.exports = {
@@ -147,5 +126,7 @@ module.exports = {
     callStructure:{retrieve,store},
     count,
     age,
-    clear
+    clear,
+    clearEntry,
+    update
 }
