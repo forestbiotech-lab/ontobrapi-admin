@@ -474,6 +474,8 @@ window.anchor = new Vue({                                                  //Ano
         predicate:"rdf:type",
         file:document.location.pathname.split("/").slice(-2)[0],
         module:document.location.pathname.split("/").slice(-3)[0],
+        version:document.location.pathname.split("/").slice(-5)[0],
+        callUrl:"",
         classes:[]
     },
     computed: {
@@ -482,9 +484,70 @@ window.anchor = new Vue({                                                  //Ano
         },
         observation(){
             return "ppeo:"+this.className
+        },
+        listCall(value){
+            return "true"==document.querySelector("input#flexSwitchListCall").getAttribute("listcall")
+        },
+        get(value){
+            return "true"==document.querySelector("input#flexSwitchGet").getAttribute("get")
+        },
+        post(value){
+            return "true"==document.querySelector("input#flexSwitchPost").getAttribute("post")
         }
     },
     methods:{
+        async saveTypeGet(evt){
+            window.anchor.$data.get=evt.target.checked
+            let result=await $.post("/admin/forms/list-call/set/get",
+                window.anchor.$data
+            )
+            if(result=="done"){
+                document.location.reload()
+            }else{
+                displayToast("Failed to save class!",result)
+            }
+            console.log(a)
+            //todo Deal with results
+        },
+        async saveTypePost(evt){
+            window.anchor.$data.post=evt.target.checked
+            let result=await $.post("/admin/forms/list-call/set/post",
+                window.anchor.$data
+            )
+            if(result=="done"){
+                document.location.reload()
+            }else{
+                displayToast("Failed to save class!",result)
+            }
+            console.log(a)
+            //todo Deal with results
+        },
+        async saveCallUrlToFile(evt){
+            window.anchor.$data.callUrl=evt.target.value
+            let result=await $.post("/admin/forms/list-call/set/url",
+                window.anchor.$data
+            )
+            if(result=="done"){
+                document.location.reload()
+            }else{
+                displayToast("Failed to save class!",result)
+            }
+            console.log(a)
+            //todo Deal with results
+        },
+        async saveListCallToFile(evt){
+            window.anchor.$data.listCall=evt.target.checked
+            let result=await $.post("/admin/forms/list-call/set/active",
+                window.anchor.$data
+            )
+            if(result=="done"){
+                document.location.reload()
+            }else{
+                displayToast("Failed to save class!",result)
+            }
+            console.log(a)
+            //todo Deal with results
+        },
       //todo something on change of class save class to file reload page
         async saveClassToFile(a){
             window.anchor.$data.observation=window.anchor.observation
@@ -504,6 +567,8 @@ window.anchor = new Vue({                                                  //Ano
     async beforeMount(){
         try {
             this.classes=await $.get('/admin/query/ppeo/listClasses')
+            //window.anchor.$data.initialChecked=document.querySelector("input#flexSwitchListCall").getAttribute("listcall")
+            //todo this.listCalls=await $.get('/admin/query/')
         }catch(e){
             displayToast("Error loading table",JSON.stringify(e))
         }
