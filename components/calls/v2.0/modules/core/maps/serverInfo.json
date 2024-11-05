@@ -48,7 +48,7 @@
     "location": "PT",
     "organizationName": "Biodata.pt",
     "organizationURL": "biodata.pt/home",
-    "serverDescription": "The BrAPI Test Server\nWeb Server - Nginx 1.25.3\nDatabase - Openlink Virtuso V07.20.3215\nSupported BrAPI Version - V2.0",
+    "serverDescription": "The PHENO - BrAPI Test Server | Web Server - Nginx 1.25.3 | Database - Openlink Virtuso V07.20.3215 | Supported BrAPI Version - V2.0",
     "serverName": "Pheno Test Server"
   },
   "_anchor": {
@@ -56,5 +56,8 @@
     "s": "",
     "p": "rdf:type",
     "o": ""
-  }
+  },
+  "_call-url": "serverinfo",
+  "_call-get": "true",
+  "_call-post": "true"
 }

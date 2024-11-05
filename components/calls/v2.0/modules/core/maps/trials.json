@@ -2,7 +2,7 @@
   "_anchor": {
     "class": "",
     "s": "",
-    "p": "",
+    "p": "rdf:type",
     "o": ""
   },
   "@context": [
@@ -91,5 +91,7 @@
         "trialPUI": "https://doi.org/101093190"
       }
     ]
-  }
+  },
+  "_call-url": "trials",
+  "_list-call": "true"
 }

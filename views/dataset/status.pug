@@ -10,11 +10,24 @@ block content
             | #{uid}
             br
             if result[0]
+                strong public release date&nbsp;
+                | #{result[0].investigationPublicReleaseDate.replace("T"," ").replace("Z","")}
+                br
                 strong Location&nbsp;
                 | Staging
                 br
                 strong Status&nbsp;
                 | #{result[0].investigationStatus}
+                .form-check
+                    input#flexCheckDefault.form-check-input(type="checkbox", checked="true")
+                    label.form-check-label(for="flexCheckDefault")
+                        | Has public release date elapsed?
+                .form-check
+                    input#flexCheckDefault.form-check-input(type="checkbox", checked="true")
+                    label.form-check-label(for="flexCheckDefault")
+                        | Approved by curated?
+
+                p
                 .card
                     .card-header.text-bg-success
                         h5 Investigation

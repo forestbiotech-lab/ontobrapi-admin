@@ -467,6 +467,34 @@ async function getTemplate(part){
     return result.pop()
 }
 
+window.calls = new Vue({
+    el: "#calls",
+    data:{
+        file:document.location.pathname.split("/").slice(-2)[0],
+        module:document.location.pathname.split("/").slice(-3)[0],
+        version:document.location.pathname.split("/").slice(-5)[0],
+    },
+    methods:{
+        async saveValue(evt){
+            let target=evt.target
+            let data=window.calls.$data
+            data.name=target.name
+            data.value=target.value
+            let result=await $.post("/admin/forms/serverinfo/set/call",
+                data
+            )
+            if(result=="done"){
+                target.style.backgroundColor="green"
+                window.setTimeout(function(){
+                    target.style.backgroundColor="white"
+                },3000)
+            }else{
+                displayToast("Failed to save class!",result)
+            }
+        },
+    }
+})
+
 window.anchor = new Vue({                                                  //Anonymous can't get back to it if necessary!!!!
     el: "#anchor",
     data: {
@@ -496,31 +524,22 @@ window.anchor = new Vue({                                                  //Ano
         }
     },
     methods:{
-        async saveTypeGet(evt){
-            window.anchor.$data.get=evt.target.checked
-            let result=await $.post("/admin/forms/list-call/set/get",
+        async saveCallAttributes(evt){
+            let target=evt.target
+            window.anchor.$data.name=target.name
+            window.anchor.$data.value=target.checked
+            let result=await $.post("/admin/forms/list-call/set/checked",
                 window.anchor.$data
             )
             if(result=="done"){
-                document.location.reload()
+                let style=target.style
+                target.style.backgroundColor="green"
+                window.setTimeout(function(){
+                    target.style=style
+                },3000)
             }else{
                 displayToast("Failed to save class!",result)
             }
-            console.log(a)
-            //todo Deal with results
-        },
-        async saveTypePost(evt){
-            window.anchor.$data.post=evt.target.checked
-            let result=await $.post("/admin/forms/list-call/set/post",
-                window.anchor.$data
-            )
-            if(result=="done"){
-                document.location.reload()
-            }else{
-                displayToast("Failed to save class!",result)
-            }
-            console.log(a)
-            //todo Deal with results
         },
         async saveCallUrlToFile(evt){
             window.anchor.$data.callUrl=evt.target.value
@@ -532,20 +551,6 @@ window.anchor = new Vue({                                                  //Ano
             }else{
                 displayToast("Failed to save class!",result)
             }
-            console.log(a)
-            //todo Deal with results
-        },
-        async saveListCallToFile(evt){
-            window.anchor.$data.listCall=evt.target.checked
-            let result=await $.post("/admin/forms/list-call/set/active",
-                window.anchor.$data
-            )
-            if(result=="done"){
-                document.location.reload()
-            }else{
-                displayToast("Failed to save class!",result)
-            }
-            console.log(a)
             //todo Deal with results
         },
       //todo something on change of class save class to file reload page

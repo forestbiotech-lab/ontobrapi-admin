@@ -115,8 +115,9 @@ router.get('/:version/listcalls/:moduleName/:callName/map', async function(req, 
   let callUrl=json["_call-url"]
   let get=json["_call-get"]
   let post=json["_call-post"]
+  let results=json["result"]
   json=JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`))
-
+  json['result']=results
   prettyHtml=require('json-pretty-html').default
   let html=prettyHtml(json)
   let anchorProperties={objectProperties:[],dataProperties:[]}

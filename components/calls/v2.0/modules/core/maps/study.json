@@ -423,7 +423,7 @@
       }
     ]
   },
-  "_list-call": "false",
+  "_list-call": "true",
   "_call-url": "study",
   "_call-post": "false",
   "_call-get": "true"

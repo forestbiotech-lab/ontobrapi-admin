@@ -44,6 +44,34 @@ router.get('/ontologycomments/:ontology/',(req,res)=>{
     })
 })
 
+router.post('/serverinfo/set/call', async (req,res)=>{
+    //TODO set to cache as well
+    let data=req.body
+    let {name,value,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json.result[name] = value
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
+})
+router.post('/list-call/set/checked', async (req,res)=>{
+    //TODO set to cache as well
+    let data=req.body
+    let {name,value,version,module,file}=data
+    try {
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
+        json[name] = value
+        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
+        await dbUtils.setCallStatus(version,module,file)
+        res.json("done")
+    }catch (e){
+        res.json(e)
+    }
+})
+
 router.post('/list-call/set/url', async (req,res)=>{
     //TODO set to cache as well
     let data=req.body
@@ -59,46 +87,6 @@ router.post('/list-call/set/url', async (req,res)=>{
     }
 })
 
-router.post('/list-call/set/active',async (req,res)=>{
-    //TODO set to cache as well
-    let data=req.body
-    let {listCall,version,module,file}=data
-    try {
-        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
-        json["_list-call"] = listCall
-        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
-        await dbUtils.setCallStatus(version,module,file)
-        res.json("done")
-    }catch (e){
-        res.json(e)
-    }
-})
-router.post('/list-call/set/get',async (req,res)=>{
-    let data=req.body
-    let {get,version,module,file}=data
-    try {
-        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
-        json["_call-get"] = get
-        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
-        await dbUtils.setCallStatus(version,module,file)
-        res.json("done")
-    }catch (e){
-        res.json(e)
-    }
-})
-router.post('/list-call/set/post',async (req,res)=>{
-    let data=req.body
-    let {post,version,module,file}=data
-    try {
-        let json = JSON.parse(fs.readFileSync(`./components/calls/${version}/modules/${module}/maps/${file}`))
-        json["_call-post"] = post
-        fs.writeFileSync(`components/calls/${version}/modules/${module}/maps/${file}`, JSON.stringify(json, null, 2))
-        await dbUtils.setCallStatus(version,module,file)
-        res.json("done")
-    }catch (e){
-        res.json(e)
-    }
-})
 
 router.post('/anchor/set/class',(req,res)=>{
     let data=req.body

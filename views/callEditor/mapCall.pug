@@ -13,17 +13,17 @@ block content
                         .col-1
                             h5 List Call
                             .form-check.form-switch
-                                input#flexSwitchListCall.form-check-input(type='checkbox' role='switch' @input="saveListCallToFile" v-model="listCall" listCall=listCall)
+                                input#flexSwitchListCall.form-check-input(type='checkbox' role='switch' @input="saveCallAttributes" name="_list-call" v-model="listCall" listCall=listCall)
                                 label.form-check-label(for='flexSwitchListCall')
                         .col
                             label.form-label(for="callUrl") Call url:
                             span /{{version}}/{{callUrl}}
                             input#callUrl.form-control(type="text"  @change="saveCallUrlToFile" value=callUrl)
                             .form-check.form-switch
-                                input#flexSwitchGet.form-check-input(type='checkbox' role='switch' @input="saveTypeGet" v-model="get" get=get)
+                                input#flexSwitchGet.form-check-input(type='checkbox' role='switch' @input="saveCallAttributes" name="_call-get" v-model="get" get=get)
                                 label.form-check-label(for='flexSwitchGet') GET
                             .form-check.form-switch
-                                input#flexSwitchPost.form-check-input(type='checkbox' role='switch' @input="saveTypePost" v-model="post" post=post)
+                                input#flexSwitchPost.form-check-input(type='checkbox' role='switch' @input="saveCallAttributes" name="_call-post" v-model="post" post=post)
                                 label.form-check-label(for='flexSwitchPost') POST
             .card-body
                 .d-flex.flex-row
@@ -89,7 +89,7 @@ block content
     else
         //Call
         if json.result.calls
-            .card
+            .card#calls
                 .card-body
                     .card
                         .card-header
@@ -98,12 +98,12 @@ block content
                             for attribute in Object.keys(json.result.calls)
                                 .mb-3
                                     label.form-label(for='formGroup'+attribute)=attribute
-                                    input.form-control(id="formGroup"+attribute type='text' placeholder='value of '+attribute value=json.result.calls[attribute])
+                                    input.form-control(id="formGroup"+attribute type='text' placeholder='value of '+attribute value=json.result.calls[attribute] name=attribute)
                     for attribute in Object.keys(json.result)
                         if attribute != "calls"
                             .mb-3
                                 label.form-label(for='formGroup'+attribute)=attribute
-                                input.form-control(id="formGroup"+attribute type='text' placeholder='value of '+attribute value=json.result[attribute])
+                                input.form-control(id="formGroup"+attribute type='text' placeholder='value of '+attribute value=json.result[attribute] name=attribute @change="saveValue")
     div !{html}
         //each moduleValue in modules
           //tr
