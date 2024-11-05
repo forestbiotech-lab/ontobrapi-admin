@@ -47,7 +47,7 @@ function del(repo){
 
 function get(repo,uid){
     let query=new Query()
-    query.selectors=["?datasets","?dsInvestigation", "?investigationId", "?investigationName", "?investigationStatus", "?investigationDescription", "?studyName"]
+    query.selectors=["?datasets","?dsInvestigation", "?investigationId", "?investigationName", "?investigationStatus", "?investigationDescription", "?studyName","?investigationPublicReleaseDate"]
     query.graph=`${repo}:`
     query.action="SELECT"
     query.triples=[
@@ -59,6 +59,7 @@ function get(repo,uid){
         "?dsInvestigation miappe:hasName ?investigationName .",
         "?datasets miappe:hasStatus ?investigationStatus .",
         "?dsInvestigation miappe:hasDescription ?investigationDescription .",
+        "?dsInvestigation miappe:hasPublicReleaseDate ?investigationPublicReleaseDate .",
         "?dsInvestigation miappe:hasPart ?study .",
         "?study rdf:type miappe:study .",
         "?study miappe:hasName ?studyName ."
