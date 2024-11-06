@@ -8,6 +8,7 @@ const brapiAttributesQuery = require('.././components/sparql/brapiAttributesQuer
 const classProperties = require('../components/sparql/baseOntologyClassProperties')
 const inferredRelationships = require('../components/sparql/baseOntologyInferredRelationships')
 const Query = require('../components/sparql/query')
+const updateServerInfo=require('./../components/services/updateServerInfo')
 
 const sanitizeParams  = require('./../components/helpers/sanitizeParams')
 const fs = require('fs')
@@ -384,5 +385,15 @@ router.get('/dataset/list/species/:graph', async function(req, res, next) {
   res.render("dataset/species", {result:result.data,graph})
 })
 
+router.get('/services/updateServerInfo',async function(req,res){
+  let result= await updateServerInfo()
+  //TODO might not provide feedback, but runs
+  res.send('done')
+})
+router.post('/services/updateServerInfo',async function(req,res){
+  let result= await updateServerInfo()
+  //TODO might not provide feedback, but runs
+  res.json({status:'done'})
+})
 
 module.exports = router;

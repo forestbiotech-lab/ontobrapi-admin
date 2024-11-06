@@ -38,6 +38,9 @@ async function run(){
 
 run().then(data=>{
     console.log("Done")
+    return "done"
 }).catch(err=>{
     console.log(err)
 })
+
+module.exports = run
