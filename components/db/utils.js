@@ -19,8 +19,8 @@ async function setCallStatus(version, moduleName, callName) {
 
             let data={
                 callUrl: json["_call-url"],
-                post: json["_call-post"],
-                get: json["_call-get"],
+                post: json["_call-post"] =="true",
+                get: json["_call-get"]=="true",
                 datatype: "application/json"
             }
 
