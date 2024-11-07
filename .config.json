@@ -1,13 +1,13 @@
 {
   "access_point": {
-    "external": "https://brapi.costadecaparica.pt"
+    "external": "https://brapi.biodata.pt"
   },
   "sparql": {
     "user": "dba",
     "pass": "dba",
     "host": "db",
     "protocol": "http",
-    "port": "443",
+    "port": "8890",
     "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#",
     "ontoBrAPI": "http://brapi.biodata.pt"
   },
