@@ -67,6 +67,7 @@ block content
                                 button.btn(:class="buttonType(attribute)",:attribute="attribute",type='button' data-bs-toggle='collapse' :data-bs-target="'#'+attribute" aria-expanded='false' :aria-controls="attribute") {{ attribute }}&nbsp;
                                     span.badge.bg-success(v-if="valueType(attribute)=='direct'")
                                         | {{ callStructure.result.data[0][attribute] }}
+                                        span(v-if="1==1")
                                     span.badge.bg-success(v-if="valueType(attribute)=='object'")
                                         | object
                                     span.badge.bg-primary(v-if="valueType(attribute)=='object'" @click="addAttribute(attribute,'object')")
@@ -75,6 +76,7 @@ block content
                                         | array
                                     span.badge.bg-success(v-if="valueType(attribute)=='directProcessed'")
                                         | {{ callStructure.result.data[0][attribute]._value }}
+                                        span(v-if="this.callStructure.result.data[0][attribute].property!=''") &nbsp;✅
                             .collapse.card.mx-2.px-2.pt-3(:id="attribute",v-if="valueType(attribute)=='direct'")
                                 layer(:layer="0",:call-structure="callStructure",:data-properties="dataProperties",:object-properties="objectProperties",:attribute="attribute")
                             .collapse.card.mx-2.px-2.pt-3(:id="attribute",v-if="valueType(attribute)=='object'")

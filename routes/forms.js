@@ -97,12 +97,12 @@ router.post('/anchor/set/class',(req,res)=>{
         o:data.observation
     }
     try {
-        let json = JSON.parse(fs.readFileSync(`./components/modules/${data.module}/maps/${data.file}`))
+        let json = JSON.parse(fs.readFileSync(`./components/calls/${data.version}/modules/${data.module}/maps/${data.file}`))
         json["_anchor"] = anchor
-        fs.writeFileSync(`components/modules/${data.module}/maps/${data.file}`, JSON.stringify(json, null, 2))
+        fs.writeFileSync(`components/calls/${data.version}/modules/${data.module}/maps/${data.file}`, JSON.stringify(json, null, 2))
         res.json("done")
     }catch (e){
-        res.json(e)
+        res.json({message: e.message})
     }
 })
 

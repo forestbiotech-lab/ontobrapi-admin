@@ -190,9 +190,18 @@ async function dynamicLayer(name) {
 
                 let value,targetLabel;
                 if(dataType == "class"){
-                    value = this.className
+                    if (input.tagName=="INPUT"){
+                        input.value
+                    }else{
+                        value = this.className
+
+                    }
                 }else if(dataType == "property"){
-                    value = this.property
+                    if (input.tagName=="INPUT"){
+                        input.value
+                    }else{
+                        value = this.property
+                    }
                 }
 
                 if(input instanceof HTMLElement){
@@ -347,6 +356,10 @@ async function dynamicLayer(name) {
         },
         beforeMount: async function () {
             //Loads the Properties on all v-select
+            if (this.className==""){
+                //Otherwise it will go to the incorrect route
+                this.className="undefined"
+            }
             this.objectProperties[this.className] = await $.get(`/admin/query/inferred/objectProperty/${this.className}`)
             this.dataProperties[this.className] = await $.get(`/admin/query/inferred/dataProperty/${this.className}`)
             let that = this
@@ -494,7 +507,7 @@ window.calls = new Vue({
         },
     }
 })
-
+Vue.config.devtools = true
 window.anchor = new Vue({                                                  //Anonymous can't get back to it if necessary!!!!
     el: "#anchor",
     data: {
@@ -563,7 +576,7 @@ window.anchor = new Vue({                                                  //Ano
             if(saveClass=="done"){
                 document.location.reload()
             }else{
-                displayToast("Failed to save class!",saveClass)
+                displayToast("Failed to save class!",saveClass.message)
             }
             console.log(a)
             //todo Deal with results

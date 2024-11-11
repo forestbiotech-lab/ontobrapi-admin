@@ -179,6 +179,22 @@ router.get('/:version/listCalls/:moduleName/:callName/result',async function(req
   }
 })
 
+router.post('/:version/listCalls/:moduleName/:callName/result',async function(req,res,next){
+  try{
+    let requestParams=sanitizeParams(req.query) //TODO security check params based onl
+    //let
+    let servers= {
+      server: `${req.protocol}://${req.headers.host}/`,
+      activeGraph: require("./../.config.json").sparql.ontoBrAPIgraph
+    }
+    let {version, moduleName,callName}=req.params
+    let callStructure=await brapiAttributesQuery(servers, version, moduleName, callName, requestParams)
+    res.json(callStructure)
+  }catch(err){
+    res.json(err)
+  }
+})
+
 router.get('/:version/listCalls/:moduleName/:callName/gui',async function(req,res,next){
   let listVersions="d-none"
   let listCalls="d-none"
