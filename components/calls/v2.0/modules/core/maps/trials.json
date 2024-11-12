@@ -77,12 +77,60 @@
           "additionalProp2": "string",
           "additionalProp3": "string"
         },
-        "commonCropName": "Wheat",
+        "commonCropName": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#study",
+              "property": "hasPart"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+              "property": "hasBiologicalMaterial"
+            },
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#biological_material",
+              "property": "hasTaxonIdentifier"
+            }
+          ],
+          "_value": "Wheat"
+        },
         "contacts": [
           {
             "contactDbId": "5f4e5509",
-            "email": "bob@bob.com",
-            "instituteName": "The BrAPI Institute",
+            "email": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#study",
+                  "property": "hasPart"
+                },
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#Person",
+                  "property": "hasPersonWithRole"
+                },
+                {
+                  "class": "",
+                  "property": ""
+                }
+              ],
+              "_value": "bob@bob.com"
+            },
+            "instituteName": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#study",
+                  "property": "hasPart"
+                },
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#institution",
+                  "property": "hasContactInstitution"
+                },
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#institution",
+                  "property": "hasName"
+                }
+              ],
+              "_value": "The BrAPI Institute"
+            },
             "name": "Bob Robertson",
             "orcid": "http://orcid.org/0000-0001-8640-1750",
             "type": "PI"
@@ -152,7 +200,7 @@
               "_sparQL": [
                 {
                   "class": "http://purl.org/ppeo/PPEO.owl#investigation",
-                  "property": "hasSubmissionDate"
+                  "property": "hasIdentifier"
                 }
               ],
               "_value": "doi:10.15454/312953986E3"
