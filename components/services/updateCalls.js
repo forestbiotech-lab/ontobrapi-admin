@@ -36,7 +36,7 @@ function mapExists(version, moduleName,callName){
 
 function makeMapCall(version, moduleName,callName) {
     if (!mapExists(version, moduleName, callName)){
-        fs.copyFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`, `components/${version}/modules/${moduleName}/maps/${callName}`)
+        fs.copyFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`, `components/calls/${version}/modules/${moduleName}/maps/${callName}`)
         let json = JSON.parse(fs.readFileSync(`components/calls/${version}/modules/${moduleName}/schemes/${callName}`))
         json["_anchor"] = {}
         json["_anchor"].class = ""
