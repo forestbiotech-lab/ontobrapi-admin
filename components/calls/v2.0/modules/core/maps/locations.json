@@ -1,0 +1,72 @@
+{
+  "@context": [
+    "https://brapi.org/jsonld/context/metadata.jsonld"
+  ],
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 10,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Request accepted, response successful",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "abbreviation": "L1",
+        "additionalInfo": {},
+        "coordinateDescription": "North East corner of greenhouse",
+        "coordinateUncertainty": "20",
+        "coordinates": {
+          "geometry": {
+            "coordinates": [
+              -76.506042,
+              42.417373,
+              123
+            ],
+            "type": "Point"
+          },
+          "type": "Feature"
+        },
+        "countryCode": "PER",
+        "countryName": "Peru",
+        "documentationURL": "https://brapi.org",
+        "environmentType": "Nursery",
+        "exposure": "Structure, no exposure",
+        "externalReferences": [
+          {
+            "referenceId": "doi:10.155454/12341234",
+            "referenceSource": "DOI"
+          },
+          {
+            "referenceId": "75a50e76",
+            "referenceSource": "Remote Data Collection Upload Tool"
+          }
+        ],
+        "instituteAddress": "71 Pilgrim Avenue Chevy Chase MD 20815",
+        "instituteName": "Plant Science Institute",
+        "locationDbId": "3cfdd67d",
+        "locationName": "Location 1",
+        "locationType": "Field Station",
+        "parentLocationDbId": "0a93f7d8",
+        "parentLocationName": "Field Station Alpha",
+        "siteStatus": "Private",
+        "slope": "0",
+        "topography": "Valley"
+      }
+    ]
+  },
+  "_anchor": {
+    "class": "",
+    "s": "",
+    "p": "rdf:type",
+    "o": ""
+  }
+}

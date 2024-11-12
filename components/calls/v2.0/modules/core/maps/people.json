@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://brapi.org/jsonld/context/metadata.jsonld"
+  ],
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 10,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Request accepted, response successful",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "additionalInfo": {},
+        "description": "Bob likes pina coladas and getting caught in the rain.",
+        "emailAddress": "bob@bob.com",
+        "externalReferences": [
+          {
+            "referenceId": "doi:10.155454/12341234",
+            "referenceSource": "DOI"
+          },
+          {
+            "referenceId": "75a50e76",
+            "referenceSource": "Remote Data Collection Upload Tool"
+          }
+        ],
+        "firstName": "Bob",
+        "lastName": "Robertson",
+        "mailingAddress": "123 Street Ave, City, State, Country",
+        "middleName": "Danger",
+        "personDbId": "14340a54",
+        "phoneNumber": "+1-555-555-5555",
+        "userID": "bob-23"
+      }
+    ]
+  },
+  "_anchor": {
+    "class": "",
+    "s": "",
+    "p": "rdf:type",
+    "o": ""
+  }
+}

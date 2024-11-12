@@ -1,0 +1,112 @@
+{
+  "@context": [
+    "https://brapi.org/jsonld/context/metadata.jsonld"
+  ],
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 10,
+      "totalPages": 1
+    },
+    "status": [
+      {
+        "message": "Request accepted, response successful",
+        "messageType": "INFO"
+      }
+    ]
+  },
+  "result": {
+    "data": [
+      {
+        "accessionNumber": "A0000003",
+        "acquisitionDate": "2018-01-01",
+        "additionalInfo": {},
+        "biologicalStatusOfAccessionCode": "420",
+        "biologicalStatusOfAccessionDescription": "Genetic stock",
+        "breedingMethodDbId": "ffcce7ef",
+        "breedingMethodName": "Male Backcross",
+        "collection": "Rice Diversity Panel 1 (RDP1)",
+        "commonCropName": "Maize",
+        "countryOfOriginCode": "BES",
+        "defaultDisplayName": "A0000003",
+        "documentationURL": "https://wiki.brapi.org",
+        "donors": [
+          {
+            "donorAccessionNumber": "A0000123",
+            "donorInstituteCode": "PER001"
+          }
+        ],
+        "externalReferences": [
+          {
+            "referenceId": "doi:10.155454/12341234",
+            "referenceSource": "DOI"
+          },
+          {
+            "referenceId": "75a50e76",
+            "referenceSource": "Remote Data Collection Upload Tool"
+          }
+        ],
+        "genus": "Aspergillus",
+        "germplasmDbId": "d4076594",
+        "germplasmName": "A0000003",
+        "germplasmOrigin": [
+          {
+            "coordinateUncertainty": "20",
+            "coordinates": {
+              "geometry": {
+                "coordinates": [
+                  -76.506042,
+                  42.417373,
+                  123
+                ],
+                "type": "Point"
+              },
+              "type": "Feature"
+            }
+          }
+        ],
+        "germplasmPUI": "http://pui.per/accession/A0000003",
+        "germplasmPreprocessing": "EO:0007210; transplanted from study 2351 observation unit ID: pot:894",
+        "instituteCode": "PER001",
+        "instituteName": "The BrAPI Institute",
+        "pedigree": "A0000001/A0000002",
+        "seedSource": "INRA:095115_inra",
+        "seedSourceDescription": "Branches were collected from a 10-year-old tree growing in a progeny trial established in a loamy brown earth soil.",
+        "species": "fructus",
+        "speciesAuthority": "Smith, 1822",
+        "storageTypes": [
+          {
+            "code": "20",
+            "description": "Field collection"
+          },
+          {
+            "code": "11",
+            "description": "Short term"
+          }
+        ],
+        "subtaxa": "Aspergillus fructus A",
+        "subtaxaAuthority": "Smith, 1822",
+        "synonyms": [
+          {
+            "synonym": "variety_1",
+            "type": "Pre-Code"
+          }
+        ],
+        "taxonIds": [
+          {
+            "sourceName": "NCBI",
+            "taxonId": "2026747"
+          }
+        ]
+      }
+    ]
+  },
+  "_anchor": {
+    "class": "",
+    "s": "",
+    "p": "rdf:type",
+    "o": ""
+  }
+}

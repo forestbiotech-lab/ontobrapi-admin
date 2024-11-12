@@ -1,13 +1,41 @@
 {
   "_anchor": {
-    "class": "",
-    "s": "",
+    "class": "investigation",
+    "s": "?investigation",
     "p": "rdf:type",
-    "o": ""
+    "o": "ppeo:investigation"
   },
   "@context": [
     "https://brapi.org/jsonld/context/metadata.jsonld"
   ],
+  "_request": {
+    "active": true,
+    "commonCropNames": [],
+    "externalReferenceIDs": [],
+    "externalReferenceIds": [],
+    "externalReferenceSources": [],
+    "germplasmDbIds": [],
+    "germplasmNames": [],
+    "locationDbIds": [],
+    "locationNames": [],
+    "observationVariableDbIds": [],
+    "observationVariableNames": [],
+    "observationVariablePUIs": [],
+    "page": 0,
+    "pageSize": 1000,
+    "programDbIds": [],
+    "programNames": [],
+    "seasonDbIds": [],
+    "sortBy": [],
+    "sortOrder": [],
+    "studyCodes": [],
+    "studyDbIds": [],
+    "studyNames": [],
+    "studyPUIs": [],
+    "studyTypes": [],
+    "trialDbIds": [],
+    "trialNames": []
+  },
   "metadata": {
     "datafiles": [
       {
@@ -37,7 +65,15 @@
       {
         "active": true,
         "additionalInfo": {
-          "additionalProp1": "string",
+          "additionalProp1": {
+            "_sparQL": [
+              {
+                "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                "property": "hasMIAPPEVersion"
+              }
+            ],
+            "_value": "string"
+          },
           "additionalProp2": "string",
           "additionalProp3": "string"
         },
@@ -54,10 +90,42 @@
         ],
         "datasetAuthorships": [
           {
-            "datasetPUI": "doi:10.15454/312953986E3",
-            "license": "https://CreativeCommons.org/licenses/by/4.0",
-            "publicReleaseDate": "2022-06-06",
-            "submissionDate": "2022-06-06"
+            "datasetPUI": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                  "property": "hasAssociatedPublication"
+                }
+              ],
+              "_value": "doi:10.15454/312953986E3"
+            },
+            "license": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                  "property": "hasLicense"
+                }
+              ],
+              "_value": "https://CreativeCommons.org/licenses/by/4.0"
+            },
+            "publicReleaseDate": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                  "property": "hasPublicReleaseDate"
+                }
+              ],
+              "_value": "2022-06-06"
+            },
+            "submissionDate": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                  "property": "hasSubmissionDate"
+                }
+              ],
+              "_value": "2022-06-06"
+            }
           }
         ],
         "documentationURL": "https://wiki.brapi.org",
@@ -80,18 +148,59 @@
         "programName": "Tomatillo_Breeding_Program",
         "publications": [
           {
-            "publicationPUI": "doi:10.15454/312953986E3",
+            "publicationPUI": {
+              "_sparQL": [
+                {
+                  "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+                  "property": "hasSubmissionDate"
+                }
+              ],
+              "_value": "doi:10.15454/312953986E3"
+            },
             "publicationReference": "Selby, BrAPI - An application programming interface for plant breeding applications, Bioinformatics, https://doi.org/10.1093/bioinformatics/190"
           }
         ],
         "startDate": "2022-06-06",
-        "trialDbId": "1883b402",
-        "trialDescription": "General drought resistance trial initiated in Peru before duplication in Africa",
-        "trialName": "Peru Yield Trial 1",
-        "trialPUI": "https://doi.org/101093190"
+        "trialDbId": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasIdentifier"
+            }
+          ],
+          "_value": "1883b402"
+        },
+        "trialDescription": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasDescription"
+            }
+          ],
+          "_value": "General drought resistance trial initiated in Peru before duplication in Africa"
+        },
+        "trialName": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasName"
+            }
+          ],
+          "_value": "Peru Yield Trial 1"
+        },
+        "trialPUI": {
+          "_sparQL": [
+            {
+              "class": "http://purl.org/ppeo/PPEO.owl#investigation",
+              "property": "hasIdentifier"
+            }
+          ],
+          "_value": "https://doi.org/101093190"
+        }
       }
     ]
   },
   "_call-url": "trials",
-  "_list-call": "true"
+  "_list-call": "true",
+  "_call-get": "true"
 }
